@@ -1,0 +1,143 @@
+rules_version = '2';
+// =====================================================================
+//  CESL Digital — Reglas de seguridad de Cloud Firestore
+//  Estas reglas las aplica el SERVIDOR de Google: aunque alguien modifique
+//  la aplicación en su tablet, no puede leer ni cambiar lo que no le corresponde.
+//  (js/store/permisos.js es una copia de estas reglas para el modo demostración.)
+// =====================================================================
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- Ayudantes ----------
+    function sesion() { return request.auth != null; }
+    function ruta(col, id) { return /databases/$(database)/documents/$(col)/$(id); }
+    function yo() { return get(ruta('usuarios', request.auth.uid)).data; }
+    function tengoPerfil() { return sesion() && exists(ruta('usuarios', request.auth.uid)); }
+    function activo() { return tengoPerfil() && yo().activo == true; }
+    function esAdmin() { return activo() && yo().rol == 'admin'; }
+    function esDocente() { return activo() && yo().rol == 'docente'; }
+    function esAlumno() { return activo() && yo().rol == 'alumno'; }
+    function tieneClase(d) { return esDocente() && d.clase in yo().clases; }
+    function claseCoherente(d) { return d.clase == d.gradoId + '__' + d.materiaId; }
+    function soloCambian(campos) { return request.resource.data.diff(resource.data).affectedKeys().hasOnly(campos); }
+
+    // ---------- Configuración institucional ----------
+    match /config/{id} {
+      allow read: if true; // logo, colores y textos de la pantalla de bienvenida (no hay datos personales)
+      // Configuración inicial: solo una vez, cuando aún no existe "sistema"
+      allow create: if id == 'sistema' && sesion() && !exists(ruta('config', 'sistema'))
+                    && getAfter(ruta('usuarios', request.auth.uid)).data.rol == 'admin';
+      allow create, update, delete: if esAdmin() && id != 'sistema';
+    }
+
+    // ---------- Catálogos ----------
+    match /grados/{id} {
+      allow read: if activo();
+      allow write: if esAdmin();
+    }
+    match /materias/{id} {
+      allow read: if activo();
+      allow write: if esAdmin();
+    }
+
+    // ---------- Usuarios ----------
+    match /usuarios/{uid} {
+      allow read: if sesion() && (uid == request.auth.uid || esAdmin()
+                  || (esDocente() && resource.data.rol == 'alumno' && resource.data.gradoId in yo().grados));
+      allow create: if esAdmin()
+                    || (sesion() && uid == request.auth.uid && !exists(ruta('config', 'sistema'))
+                        && existsAfter(ruta('config', 'sistema'))
+                        && request.resource.data.rol == 'admin' && request.resource.data.activo == true);
+      allow update: if esAdmin()
+                    || (sesion() && uid == request.auth.uid && resource.data.activo == true
+                        && soloCambian(['debeCambiarPassword', 'ultimoAcceso'])
+                        && request.resource.data.get('debeCambiarPassword', false) != true);
+      allow delete: if esAdmin() && uid != request.auth.uid;
+    }
+
+    // ---------- Contenidos (temas y materiales) ----------
+    match /temas/{id} {
+      allow read: if esAdmin() || tieneClase(resource.data)
+                  || (esAlumno() && resource.data.gradoId == yo().gradoId && resource.data.visible == true);
+      allow create: if (esAdmin() || tieneClase(request.resource.data)) && claseCoherente(request.resource.data);
+      allow update: if (esAdmin() || (tieneClase(resource.data) && tieneClase(request.resource.data))) && claseCoherente(request.resource.data);
+      allow delete: if esAdmin() || tieneClase(resource.data);
+    }
+    match /recursos/{id} {
+      allow read: if esAdmin() || tieneClase(resource.data)
+                  || (esAlumno() && resource.data.gradoId == yo().gradoId && resource.data.visible == true);
+      allow create: if (esAdmin() || tieneClase(request.resource.data)) && claseCoherente(request.resource.data);
+      allow update: if (esAdmin() || (tieneClase(resource.data) && tieneClase(request.resource.data))) && claseCoherente(request.resource.data);
+      allow delete: if esAdmin() || tieneClase(resource.data);
+    }
+
+    // ---------- Actividades (sin respuestas correctas) ----------
+    match /actividades/{id} {
+      allow read: if esAdmin() || tieneClase(resource.data)
+                  || (esAlumno() && resource.data.gradoId == yo().gradoId && resource.data.publicada == true);
+      allow create: if (esAdmin() || tieneClase(request.resource.data)) && claseCoherente(request.resource.data);
+      allow update: if (esAdmin() || (tieneClase(resource.data) && tieneClase(request.resource.data))) && claseCoherente(request.resource.data);
+      allow delete: if esAdmin() || tieneClase(resource.data);
+    }
+
+    // ---------- Respuestas correctas: separadas, el alumno NO las recibe ----------
+    // Solo puede verlas si el docente lo permitió y ya usó su último intento.
+    match /claves/{actId} {
+      allow read: if esAdmin() || tieneClase(resource.data) || alumnoPuedeVerClave(actId);
+      allow create: if (esAdmin() || tieneClase(request.resource.data)) && claseCoherente(request.resource.data);
+      allow update: if (esAdmin() || (tieneClase(resource.data) && tieneClase(request.resource.data))) && claseCoherente(request.resource.data);
+      allow delete: if esAdmin() || tieneClase(resource.data);
+    }
+    function alumnoPuedeVerClave(actId) {
+      let act = get(ruta('actividades', actId)).data;
+      return esAlumno() && act.gradoId == yo().gradoId && act.publicada == true && act.mostrarRespuestas == true
+        && exists(ruta('entregas', actId + '__' + request.auth.uid + '__' + string(act.intentos)));
+    }
+
+    // ---------- Entregas de los alumnos ----------
+    // Identificador: actividad__alumno__intento  → imposible entregar dos veces el mismo intento.
+    match /entregas/{id} {
+      allow read: if sesion() && (resource.data.alumnoId == request.auth.uid || esAdmin() || tieneClase(resource.data));
+      allow create: if esAlumno() && entregaValida(id);
+      allow update: if (esAdmin() || tieneClase(resource.data)) && soloCambian(['estado']);
+      allow delete: if esAdmin() || tieneClase(resource.data);
+    }
+    function entregaValida(id) {
+      let p = id.split('__');
+      let d = request.resource.data;
+      let act = get(ruta('actividades', p[0])).data;
+      return p.size() == 3 && p[1] == request.auth.uid
+        && d.keys().hasOnly(['actividadId', 'alumnoId', 'alumnoNombre', 'gradoId', 'seccion', 'materiaId', 'temaId', 'clase', 'intento', 'respuestas', 'enviada', 'estado'])
+        && d.actividadId == p[0] && d.alumnoId == request.auth.uid && d.gradoId == yo().gradoId
+        && act.publicada == true && act.gradoId == yo().gradoId && d.clase == act.clase
+        && d.intento is int && string(d.intento) == p[2] && d.intento >= 1 && d.intento <= act.intentos
+        && d.estado == 'pendiente' && d.enviada == request.time
+        && (act.get('fechaLimite', null) == null || request.time <= act.fechaLimite);
+    }
+
+    // ---------- Calificaciones: solo las escriben docentes, administración o el servidor ----------
+    match /resultados/{id} {
+      allow read: if esAdmin() || tieneClase(resource.data)
+                  || (sesion() && resource.data.alumnoId == request.auth.uid && resource.data.visibleAlumno == true);
+      allow create: if esAdmin() || tieneClase(request.resource.data);
+      allow update: if esAdmin() || (tieneClase(resource.data) && tieneClase(request.resource.data));
+      allow delete: if esAdmin() || tieneClase(resource.data);
+    }
+
+    // ---------- Registro de cambios (no se puede editar ni borrar) ----------
+    match /bitacora/{id} {
+      allow read: if esAdmin();
+      allow create: if (esAdmin() || esDocente()) && request.resource.data.actorId == request.auth.uid
+                    && request.resource.data.fecha == request.time;
+    }
+
+    // ---------- Progreso en "Aprende Jugando" ----------
+    match /practica/{uid} {
+      allow read: if sesion() && (uid == request.auth.uid || esAdmin());
+      allow create, update: if esAlumno() && uid == request.auth.uid;
+    }
+
+    // Todo lo demás está prohibido
+    match /{todo=**} { allow read, write: if false; }
+  }
+}

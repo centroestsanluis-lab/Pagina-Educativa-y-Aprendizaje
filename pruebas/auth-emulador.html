@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><title>Prueba de autenticación (emulador de Firebase)</title></head>
+<body>
+<h1>Prueba de autenticación real de Firebase (emulador local)</h1>
+<p>Requiere: <code>firebase emulators:start --only auth --project demo-cesl</code> en el puerto 9099.</p>
+<pre id="salida">Ejecutando…</pre>
+<script>
+  window.CESL_CONFIG = { modo: 'firebase', firebase: { apiKey: 'clave-falsa-de-prueba', authDomain: 'demo-cesl.firebaseapp.com', projectId: 'demo-cesl', appId: '1:1:web:1' },
+    emuladores: { auth: 'http://127.0.0.1:9099' }, dominioUsuarios: 'alumnos.cesl.local', appsScriptUrl: '' };
+</script>
+<script type="module">
+  import { firebase as fbStore } from '../js/store/firebase.js';
+  import { correoDeUsuario } from '../js/store/index.js';
+  const EMU = 'http://127.0.0.1:9099';
+  const res = []; const salida = document.getElementById('salida');
+  const ok = (n, c, d = '') => { res.push({ prueba: n, ok: !!c, detalle: d }); salida.textContent = res.map((r) => (r.ok ? '✔ ' : '✖ ') + r.prueba + (r.ok ? '' : '  [' + r.detalle + ']')).join('\n'); };
+  const err = async (fn) => { try { await fn(); return 'SIN ERROR'; } catch (e) { return e.code || e.message; } };
+  // Llamadas idénticas a las que hace Google Apps Script (apps-script/Code.gs)
+  const rest = (ruta, cuerpo) => fetch(`${EMU}/identitytoolkit.googleapis.com/v1/${ruta}`, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer owner' }, body: JSON.stringify(cuerpo) }).then((r) => r.json());
+  try {
+    await fetch(`${EMU}/emulator/v1/projects/demo-cesl/accounts`, { method: 'DELETE' });
+    await fbStore.iniciar(window.CESL_CONFIG);
+    // Administración
+    const { createUserWithEmailAndPassword, getAuth } = await import('../vendor/firebase.js');
+    await createUserWithEmailAndPassword(getAuth(), 'direccion@colegio.com', 'Admin2026!');
+    const adminUid = fbStore.auth.uid();
+    ok('Crear cuenta de administración', !!adminUid);
+    // Crear alumno sin cerrar la sesión del administrador
+    const alumnoEmail = correoDeUsuario('ana.lopez');
+    const uidAlumno = await fbStore.admin.crearCuenta(alumnoEmail, '483920');
+    ok('Crear cuenta de alumno con usuario sin correo (ana.lopez@alumnos.cesl.local)', !!uidAlumno && uidAlumno !== adminUid);
+    ok('El administrador sigue con su sesión abierta tras crear la cuenta', fbStore.auth.uid() === adminUid);
+    ok('No se puede repetir el mismo usuario', (await err(() => fbStore.admin.crearCuenta(alumnoEmail, '111111'))) === 'auth/email-already-in-use');
+    ok('Contraseña de menos de 6 caracteres rechazada', (await err(() => fbStore.admin.crearCuenta(correoDeUsuario('x.y'), '123'))) === 'auth/weak-password');
+    await fbStore.auth.salir();
+    ok('Cerrar sesión', fbStore.auth.uid() === null);
+    // Inicio de sesión del alumno
+    ok('Contraseña incorrecta rechazada', (await err(() => fbStore.auth.entrar(alumnoEmail, '000000'))).startsWith('auth/'));
+    await fbStore.auth.entrar(alumnoEmail, '483920');
+    ok('Alumno inicia sesión con usuario y PIN', fbStore.auth.uid() === uidAlumno);
+    // Cambio de contraseña (con nueva verificación de la actual)
+    ok('Cambio de contraseña exige la contraseña actual correcta', (await err(() => fbStore.auth.cambiarClave('999999', '777888'))).startsWith('auth/'));
+    await fbStore.auth.cambiarClave('483920', '777888');
+    await fbStore.auth.salir();
+    ok('La contraseña anterior ya no funciona', (await err(() => fbStore.auth.entrar(alumnoEmail, '483920'))).startsWith('auth/'));
+    await fbStore.auth.entrar(alumnoEmail, '777888');
+    ok('La nueva contraseña funciona', fbStore.auth.uid() === uidAlumno);
+    // Verificación del token como lo hace Apps Script
+    const token = await fbStore.auth.token();
+    const look = await fetch(`${EMU}/identitytoolkit.googleapis.com/v1/accounts:lookup?key=clave-falsa-de-prueba`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ idToken: token }) }).then((r) => r.json());
+    ok('Servidor: verificación del token de sesión devuelve el usuario correcto', look.users?.[0]?.localId === uidAlumno, JSON.stringify(look).slice(0, 200));
+    const falso = await fetch(`${EMU}/identitytoolkit.googleapis.com/v1/accounts:lookup?key=clave-falsa-de-prueba`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ idToken: 'token-inventado' }) }).then((r) => r.json());
+    ok('Servidor: un token inventado es rechazado', !falso.users, JSON.stringify(falso).slice(0, 200));
+    await fbStore.auth.salir();
+    // Restablecimiento administrativo (lo que hace Apps Script con permisos de propietario)
+    await rest('projects/demo-cesl/accounts:update', { localId: uidAlumno, password: '246810' });
+    ok('Restablecer contraseña: la anterior deja de funcionar', (await err(() => fbStore.auth.entrar(alumnoEmail, '777888'))).startsWith('auth/'));
+    await fbStore.auth.entrar(alumnoEmail, '246810');
+    ok('Restablecer contraseña: la temporal funciona', fbStore.auth.uid() === uidAlumno);
+    await fbStore.auth.salir();
+    // Desactivar cuenta
+    await rest('projects/demo-cesl/accounts:update', { localId: uidAlumno, disableUser: true });
+    ok('Cuenta desactivada no puede iniciar sesión', (await err(() => fbStore.auth.entrar(alumnoEmail, '246810'))) === 'auth/user-disabled');
+    await rest('projects/demo-cesl/accounts:update', { localId: uidAlumno, disableUser: false });
+    await fbStore.auth.entrar(alumnoEmail, '246810');
+    ok('Cuenta reactivada vuelve a entrar', fbStore.auth.uid() === uidAlumno);
+    await fbStore.auth.salir();
+    // Recuperación por correo para docentes con correo real
+    const uidDoc = await (async () => { await fbStore.auth.entrar('direccion@colegio.com', 'Admin2026!'); const u = await fbStore.admin.crearCuenta('maestra.rosa@gmail.com', 'Temp2026x'); await fbStore.auth.salir(); return u; })();
+    await fbStore.auth.recuperar('maestra.rosa@gmail.com');
+    const codigos = await fetch(`${EMU}/emulator/v1/projects/demo-cesl/oobCodes`).then((r) => r.json());
+    ok('Recuperación por correo genera un enlace real de restablecimiento', codigos.oobCodes?.some((c) => c.email === 'maestra.rosa@gmail.com' && c.requestType === 'PASSWORD_RESET'), JSON.stringify(codigos).slice(0, 200));
+    // Borrar cuenta
+    await rest('projects/demo-cesl/accounts:delete', { localId: uidDoc });
+    ok('Eliminar cuenta de acceso', (await err(() => fbStore.auth.entrar('maestra.rosa@gmail.com', 'Temp2026x'))).startsWith('auth/'));
+    // Bloqueo por intentos (Firebase lo hace en producción; el emulador no lo simula, se informa)
+  } catch (e) { ok('Error inesperado', false, e.code + ' ' + e.message); }
+  window.__resultado = res;
+</script>
+</body></html>

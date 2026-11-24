@@ -1,0 +1,267 @@
+[
+ {
+  "prueba": "Contraseña incorrecta muestra aviso claro",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "prueba": "Bloqueo temporal tras intentos repetidos",
+  "ok": true,
+  "detalle": "Por seguridad espera 5 minuto(s) antes de intentar otra vez."
+ },
+ {
+  "prueba": "Alumno inicia sesión y ve su grado",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "prueba": "Alumno ve solo las materias de su grado",
+  "ok": true,
+  "detalle": "['1\\n📖\\nComunicación y Lenguaje', '1\\n🔢\\nMatemáticas', '🌱\\nMedio Social y Natural', '🇬🇹\\nMi Guatemala', '🎨\\nExpresión Artística', '💻\\nTecnología y Computación']"
+ },
+ {
+  "prueba": "Calificación automática: todo correcto = 100",
+  "ok": true,
+  "detalle": "100"
+ },
+ {
+  "prueba": "Alumno: el servidor rechaza todo lo que no le corresponde",
+  "ok": true,
+  "detalle": "{\"leer lista de usuarios\": \"permission-denied\", \"leer perfil de otro alumno\": \"permission-denied\", \"leer respuestas correctas antes del último intento\": \"permission-denied\", \"cambiar su nota\": \"permission-denied\", \"crear una nota\": \"permission-denied\", \"modificar una actividad\": \"permission-denied\", \"ver actividades de 4.º\": \"permission-denied\", \"entregar dos veces el mismo intento\": \"permission-denied\", \"entregar más intentos de los permitidos\": \"permission-denied\", \"entregar a nombre de otro alumno\": \"permission-denied\", \"entregar con nota incluida\": \"permission-denied\", \"ver bitácora\": \"permission-denied\", \"cambiarse a administrador\": \"permission-denied\", \"ver sus propias notas\": \"PERMITIDO:1\"}"
+ },
+ {
+  "prueba": "Alumno: sí puede ver sus propias notas publicadas",
+  "ok": true,
+  "detalle": "PERMITIDO:1"
+ },
+ {
+  "prueba": "Segundo intento en blanco = 0",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "prueba": "Tras el último intento ve las respuestas correctas",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "prueba": "Mis logros muestra calificaciones y progreso",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "prueba": "Abrir material dentro de la plataforma (visor)",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "prueba": "Juego: 10 rondas y pantalla de resultado",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "prueba": "Todos los tipos de juego cargan",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "prueba": "El progreso del juego se guarda para el alumno",
+  "ok": true,
+  "detalle": "PERMITIDO"
+ },
+ {
+  "prueba": "Docente ve solo sus 3 clases asignadas",
+  "ok": true,
+  "detalle": "['🔢\\nMatemáticas\\nTercero primaria', '📖\\nComunicación y Lenguaje\\nTercero primaria', '🔢\\nMatemáticas\\nCuarto primaria']"
+ },
+ {
+  "prueba": "Docente: solo accede a sus grados y materias",
+  "ok": true,
+  "detalle": "{\"ver alumnos de 3.º (su grado)\": \"PERMITIDO:3\", \"ver alumnos de 5.º (no es su grado)\": \"permission-denied\", \"ver actividades de una clase ajena\": \"permission-denied\", \"crear actividad en clase ajena\": \"permission-denied\", \"ver contraseñas o cuentas\": \"permission-denied\", \"cambiar su propio rol\": \"permission-denied\", \"asignarse otra clase\": \"permission-denied\", \"crear usuarios\": \"permission-denied\", \"cambiar el diseño institucional\": \"permission-denied\", \"ver resultados de su clase\": \"PERMITIDO:2\"}"
+ },
+ {
+  "prueba": "Docente ve el resultado del alumno (mejor intento = 100)",
+  "ok": true,
+  "detalle": "Luis Pérez\tA\tCalificada\t2/2\t12/12\t100\t\n👀 Ver\n↩️"
+ },
+ {
+  "prueba": "Exportar resultados (CSV para Excel/Sheets)",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "prueba": "Docente agrega material con enlace de Google Drive",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "prueba": "Docente sube una imagen (se reduce automáticamente)",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "prueba": "Vista previa del docente muestra las 8 preguntas",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "prueba": "Docente crea y publica actividad con los 8 tipos de pregunta",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "prueba": "Las respuestas correctas se guardan aparte de la actividad",
+  "ok": true,
+  "detalle": "PERMITIDO"
+ },
+ {
+  "prueba": "Duplicar actividad (queda oculta)",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "prueba": "Eliminar actividad",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "prueba": "Calificación con errores y pregunta abierta pendiente",
+  "ok": true,
+  "detalle": "¡Entregado! 🎉 50 ⭐  Obtuviste 5 de 10 puntos.  Algunas respuestas las revisará tu maestra o maestro; tu nota puede subir.  ¡Eres un campeón! 📝 Volver a mis tareas 👀 Ver correcciones"
+ },
+ {
+  "prueba": "Docente ve avisos de entregas por revisar",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "prueba": "Revisión manual: la nota se actualiza (8/10 = 80)",
+  "ok": true,
+  "detalle": "Sofía García\tA\tCalificada\t1/1\t8/10\t80\t\n👀 Ver\n↩️"
+ },
+ {
+  "prueba": "Calificaciones por grado y materia + temas que necesitan refuerzo",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "prueba": "La alumna ve su nota actualizada tras la revisión",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "prueba": "Sugerencia automática de usuario",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "prueba": "Crear alumno muestra credenciales una sola vez",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "prueba": "La contraseña nunca se guarda en el perfil",
+  "ok": true,
+  "detalle": "PERMITIDO"
+ },
+ {
+  "prueba": "Crear docente con grados y materias asignados",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "prueba": "Agregar secciones a un grado",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "prueba": "Crear materia y asignarla a grados",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "prueba": "Copia de seguridad completa (sin contraseñas)",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "prueba": "Reporte general de calificaciones",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "prueba": "Registro de cambios importantes",
+  "ok": true,
+  "detalle": "Fecha\tPersona\tRol\tAcción\tDetalle\n23 nov, 01:05 p. m.\tAdministración CESL\tadmin\tDescargó copia de seguridad\t\n23 nov, 01:05 p. m.\tAdministración CESL\tadmin\tCambió el diseño institucional\t\n23 nov, 01:05 p. m.\tAdministración CESL\tadmin\tCreó materia\tInglés\n23 nov, 01:05 p. m.\tAdministración CESL\tadmin\tEd"
+ },
+ {
+  "prueba": "Administración puede ver contenidos de cualquier clase",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "prueba": "El diseño guardado se aplica a todos (lema y color)",
+  "ok": true,
+  "detalle": "#6a1b9a"
+ },
+ {
+  "prueba": "Usuario desactivado no puede entrar",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "prueba": "Tras restablecer, la contraseña anterior deja de funcionar",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "prueba": "La contraseña temporal nueva funciona",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "prueba": "Cambio obligatorio de contraseña al primer ingreso",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "prueba": "Entra con su nueva contraseña",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "prueba": "Cambio de contraseña voluntario",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "prueba": "Docente nuevo debe cambiar la contraseña al entrar",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "prueba": "Sin desplazamiento horizontal en tablet-vertical (800px)",
+  "ok": true,
+  "detalle": "ancho 800"
+ },
+ {
+  "prueba": "Panel docente sin desplazamiento horizontal en tablet-vertical",
+  "ok": true,
+  "detalle": "ancho 800"
+ },
+ {
+  "prueba": "Sin desplazamiento horizontal en telefono (412px)",
+  "ok": true,
+  "detalle": "ancho 412"
+ },
+ {
+  "prueba": "Panel docente sin desplazamiento horizontal en telefono",
+  "ok": true,
+  "detalle": "ancho 412"
+ },
+ {
+  "prueba": "Sin errores de JavaScript en todo el recorrido",
+  "ok": true,
+  "detalle": ""
+ }
+]

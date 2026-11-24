@@ -1,0 +1,208 @@
+// Bancos de preguntas de "Aprende Jugando". Para ampliar la biblioteca basta
+// con agregar elementos a estas listas: { n: [nivel mínimo, nivel máximo], p: pregunta, r: respuesta correcta, o: [respuestas incorrectas], e: emoji opcional }
+
+export const PALABRAS_EMOJI = [
+  ['sol', '☀️'], ['luna', '🌙'], ['gato', '🐱'], ['perro', '🐶'], ['árbol', '🌳'], ['manzana', '🍎'], ['casa', '🏠'], ['pez', '🐟'],
+  ['oso', '🐻'], ['uva', '🍇'], ['elefante', '🐘'], ['ratón', '🐭'], ['flor', '🌸'], ['barco', '⛵'], ['tortuga', '🐢'], ['zapato', '👟'],
+  ['queso', '🧀'], ['nube', '☁️'], ['león', '🦁'], ['jirafa', '🦒'], ['vaca', '🐮'], ['pato', '🦆'], ['dado', '🎲'], ['kiwi', '🥝'],
+  ['helado', '🍦'], ['iguana', '🦎'], ['naranja', '🍊'], ['estrella', '⭐'], ['mono', '🐵'], ['lápiz', '✏️'], ['yoyo', '🪀'], ['foca', '🦭'],
+  ['conejo', '🐰'], ['tren', '🚂'], ['banano', '🍌'], ['rana', '🐸'], ['abeja', '🐝'], ['globo', '🎈'], ['libro', '📖'], ['mariposa', '🦋'],
+];
+
+export const FORMAR_PALABRAS = {
+  1: ['sol', 'mar', 'pan', 'oso', 'uva', 'luz', 'pez', 'mes'],
+  2: ['casa', 'mesa', 'gato', 'luna', 'pato', 'nube', 'flor', 'lago'],
+  3: ['escuela', 'maestra', 'familia', 'ventana', 'cuaderno', 'tortuga', 'naranja'],
+  4: ['quetzal', 'volcanes', 'mariposa', 'biblioteca', 'computadora', 'montañas'],
+  5: ['Guatemala', 'naturaleza', 'compañeros', 'responsable', 'independencia'],
+  6: ['solidaridad', 'honestidad', 'agricultura', 'comunicación', 'fotosíntesis'],
+};
+
+export const ORACIONES = [
+  { n: [1, 2], t: 'El gato come pescado' }, { n: [1, 2], t: 'Mi mamá cocina tortillas' }, { n: [1, 2], t: 'Yo juego con mi perro' },
+  { n: [1, 3], t: 'La luna brilla de noche' }, { n: [2, 3], t: 'Los niños leen un cuento' }, { n: [2, 4], t: 'El quetzal vive en el bosque' },
+  { n: [3, 4], t: 'Mañana iremos al lago de Atitlán' }, { n: [3, 5], t: 'Mi abuela teje un huipil de colores' },
+  { n: [4, 6], t: 'Los estudiantes cuidan el agua de la escuela' }, { n: [4, 6], t: 'La marimba es el instrumento nacional de Guatemala' },
+  { n: [5, 6], t: 'Debemos reciclar el papel para cuidar los árboles' }, { n: [5, 6], t: 'El volcán de Fuego se encuentra cerca de Antigua Guatemala' },
+];
+
+export const TIPOS_PALABRA = [
+  ['mesa', 'sustantivo', 1], ['perro', 'sustantivo', 1], ['correr', 'verbo', 1], ['comer', 'verbo', 1], ['saltar', 'verbo', 1], ['niña', 'sustantivo', 1],
+  ['escuela', 'sustantivo', 1], ['cantar', 'verbo', 1], ['libro', 'sustantivo', 1], ['dormir', 'verbo', 1], ['árbol', 'sustantivo', 2], ['escribir', 'verbo', 2],
+  ['Guatemala', 'sustantivo', 2], ['jugar', 'verbo', 2], ['maestro', 'sustantivo', 2], ['leer', 'verbo', 2], ['bonito', 'adjetivo', 3], ['alto', 'adjetivo', 3],
+  ['feliz', 'adjetivo', 3], ['rápido', 'adjetivo', 3], ['azul', 'adjetivo', 3], ['pequeño', 'adjetivo', 3], ['ciudad', 'sustantivo', 3], ['nadar', 'verbo', 3],
+  ['amistad', 'sustantivo', 4], ['valiente', 'adjetivo', 4], ['construir', 'verbo', 4], ['alegría', 'sustantivo', 4], ['amable', 'adjetivo', 4], ['descubrir', 'verbo', 4],
+  ['honestidad', 'sustantivo', 5], ['generoso', 'adjetivo', 5], ['investigar', 'verbo', 5], ['libertad', 'sustantivo', 5], ['enorme', 'adjetivo', 5], ['respetar', 'verbo', 5],
+];
+
+export const VOCABULARIO = [
+  { n: [1, 2], p: '¿Qué es lo contrario de "grande"?', r: 'pequeño', o: ['alto', 'rojo', 'feliz'] },
+  { n: [1, 2], p: '¿Qué es lo contrario de "día"?', r: 'noche', o: ['sol', 'tarde', 'mañana'] },
+  { n: [1, 2], p: '¿Qué es lo contrario de "frío"?', r: 'caliente', o: ['hielo', 'nieve', 'fresco'] },
+  { n: [1, 3], p: '¿Qué es lo contrario de "arriba"?', r: 'abajo', o: ['adentro', 'cerca', 'lejos'] },
+  { n: [1, 3], p: '¿Qué palabra significa lo mismo que "contento"?', r: 'feliz', o: ['triste', 'cansado', 'enojado'] },
+  { n: [2, 3], p: '¿Qué es lo contrario de "rápido"?', r: 'lento', o: ['veloz', 'fuerte', 'corto'] },
+  { n: [2, 4], p: '¿Qué palabra significa lo mismo que "hermoso"?', r: 'bonito', o: ['feo', 'viejo', 'chico'] },
+  { n: [2, 4], p: '¿Qué palabra significa lo mismo que "iniciar"?', r: 'comenzar', o: ['terminar', 'parar', 'olvidar'] },
+  { n: [3, 5], p: '¿Qué es lo contrario de "generoso"?', r: 'egoísta', o: ['amable', 'alegre', 'honrado'] },
+  { n: [3, 5], p: '¿Qué palabra significa lo mismo que "auxiliar"?', r: 'ayudar', o: ['correr', 'mirar', 'pedir'] },
+  { n: [3, 5], p: 'Un "veterinario" es la persona que…', r: 'cura a los animales', o: ['construye casas', 'vende frutas', 'maneja aviones'] },
+  { n: [4, 6], p: '¿Qué palabra significa lo mismo que "valiente"?', r: 'audaz', o: ['miedoso', 'tímido', 'débil'] },
+  { n: [4, 6], p: '¿Qué es lo contrario de "escaso"?', r: 'abundante', o: ['poco', 'raro', 'limitado'] },
+  { n: [4, 6], p: '¿Qué significa "solidaridad"?', r: 'Ayudar a los demás cuando lo necesitan', o: ['Estar siempre solo', 'Ganar todos los juegos', 'Guardar secretos'] },
+  { n: [5, 6], p: '¿Qué palabra significa lo mismo que "efímero"?', r: 'pasajero', o: ['eterno', 'pesado', 'enorme'] },
+  { n: [5, 6], p: '¿Qué es lo contrario de "honesto"?', r: 'mentiroso', o: ['sincero', 'leal', 'justo'] },
+];
+
+// Lecturas originales cortas con preguntas de comprensión
+export const LECTURAS = [
+  { n: [1, 2], t: 'Lía tiene un perro café. Se llama Toto. Toto juega con una pelota roja en el patio.',
+    q: [['¿Cómo se llama el perro?', 'Toto', ['Lía', 'Pelota', 'Café']], ['¿De qué color es la pelota?', 'roja', ['café', 'azul', 'verde']], ['¿Dónde juega Toto?', 'en el patio', ['en la escuela', 'en el río', 'en la cama']]] },
+  { n: [1, 3], t: 'Por la mañana, Pedro desayuna frijoles con tortillas. Después camina a la escuela con su hermana Ana.',
+    q: [['¿Qué desayuna Pedro?', 'frijoles con tortillas', ['pan con leche', 'arroz', 'fruta']], ['¿Con quién camina Pedro?', 'con su hermana Ana', ['con su papá', 'solo', 'con su perro']], ['¿A dónde van?', 'a la escuela', ['al mercado', 'al parque', 'al lago']]] },
+  { n: [2, 4], t: 'El quetzal es un ave de plumas verdes brillantes y pecho rojo. Vive en los bosques nublados y se alimenta de frutas, como el aguacatillo. Es el ave nacional de Guatemala.',
+    q: [['¿De qué color son las plumas del quetzal?', 'verdes', ['amarillas', 'negras', 'blancas']], ['¿Dónde vive el quetzal?', 'en los bosques nublados', ['en el desierto', 'en el mar', 'en las ciudades']], ['¿De qué se alimenta?', 'de frutas', ['de peces', 'de piedras', 'de hojas secas']]] },
+  { n: [3, 5], t: 'Sofía quería ganar la feria de ciencias. Durante dos semanas cuidó una planta de frijol: la regaba cada tarde y anotaba cuánto crecía. El día de la feria, su planta medía veinte centímetros y su cuaderno mostraba todo lo que había aprendido.',
+    q: [['¿Qué planta cuidó Sofía?', 'una planta de frijol', ['un rosal', 'un árbol de mango', 'una flor de monja blanca']], ['¿Cuánto tiempo cuidó la planta?', 'dos semanas', ['un día', 'un año', 'dos meses']], ['¿Para qué usó su cuaderno?', 'para anotar cuánto crecía', ['para dibujar animales', 'para hacer sumas', 'para escribir cuentos']]] },
+  { n: [4, 6], t: 'El lago de Atitlán está en el departamento de Sololá y lo rodean tres volcanes: Atitlán, Tolimán y San Pedro. A su alrededor hay pueblos donde se hablan idiomas mayas como el kaqchikel y el tz\'utujil. Muchas familias viven de la pesca, la agricultura y el turismo, por eso es importante mantener limpias sus aguas.',
+    q: [['¿En qué departamento está el lago de Atitlán?', 'Sololá', ['Petén', 'Izabal', 'Escuintla']], ['¿Cuántos volcanes rodean el lago?', 'tres', ['dos', 'cinco', 'ninguno']], ['¿Por qué es importante mantener limpio el lago?', 'porque muchas familias viven de él', ['porque es muy pequeño', 'porque no tiene peces', 'porque está en otro país']]] },
+  { n: [5, 6], t: 'Las abejas son muy importantes para la vida en el planeta. Al ir de flor en flor llevan el polen de una planta a otra; a esto se le llama polinización. Gracias a ella, muchas plantas producen frutos y semillas. Sin abejas, tendríamos menos frutas y verduras en nuestra mesa.',
+    q: [['¿Cómo se llama el proceso de llevar polen de una flor a otra?', 'polinización', ['fotosíntesis', 'evaporación', 'digestión']], ['¿Qué producen las plantas gracias a la polinización?', 'frutos y semillas', ['piedras', 'agua salada', 'plástico']], ['¿Cuál es la idea principal del texto?', 'Las abejas son importantes para que haya alimentos', ['Las abejas son peligrosas', 'Las flores no necesitan abejas', 'Las abejas viven en el mar']]] },
+];
+
+export const CIENCIAS = {
+  cuerpo: [
+    { n: [1, 2], p: '¿Con qué parte del cuerpo vemos?', r: 'los ojos', o: ['las manos', 'los pies', 'las orejas'], e: '👀' },
+    { n: [1, 2], p: '¿Con qué parte del cuerpo escuchamos?', r: 'las orejas', o: ['la nariz', 'la boca', 'las rodillas'], e: '👂' },
+    { n: [1, 2], p: '¿Con qué sentimos los olores?', r: 'la nariz', o: ['los ojos', 'el codo', 'el cabello'], e: '👃' },
+    { n: [1, 3], p: '¿Cuántos sentidos tenemos?', r: '5', o: ['3', '7', '10'], e: '🖐️' },
+    { n: [1, 3], p: '¿Qué debemos hacer antes de comer?', r: 'lavarnos las manos', o: ['dormir', 'correr', 'ver televisión'], e: '🧼' },
+    { n: [2, 4], p: '¿Qué órgano bombea la sangre por todo el cuerpo?', r: 'el corazón', o: ['el estómago', 'los pulmones', 'el hígado'], e: '❤️' },
+    { n: [2, 4], p: '¿Con qué órganos respiramos?', r: 'los pulmones', o: ['los riñones', 'el corazón', 'los huesos'], e: '🫁' },
+    { n: [3, 5], p: '¿Qué órgano controla todo el cuerpo y nos permite pensar?', r: 'el cerebro', o: ['el corazón', 'el estómago', 'la piel'], e: '🧠' },
+    { n: [3, 5], p: '¿Cuál es el órgano más grande del cuerpo?', r: 'la piel', o: ['el corazón', 'el hígado', 'el cerebro'] },
+    { n: [3, 6], p: '¿Cómo se llama el conjunto de huesos del cuerpo?', r: 'esqueleto', o: ['músculo', 'sangre', 'tendón'], e: '🦴' },
+    { n: [4, 6], p: '¿Dónde empieza la digestión de los alimentos?', r: 'en la boca', o: ['en los pies', 'en los pulmones', 'en el corazón'] },
+    { n: [5, 6], p: '¿Cuántos huesos tiene aproximadamente una persona adulta?', r: '206', o: ['50', '100', '500'] },
+    { n: [5, 6], p: '¿Qué sistema está formado por el corazón y los vasos sanguíneos?', r: 'sistema circulatorio', o: ['sistema digestivo', 'sistema respiratorio', 'sistema óseo'] },
+    { n: [5, 6], p: '¿Qué gas tomamos del aire al respirar?', r: 'oxígeno', o: ['dióxido de carbono', 'humo', 'vapor'] },
+  ],
+  seres: [
+    { n: [1, 2], p: '¿Qué animal tiene plumas?', r: 'la gallina', o: ['el perro', 'el pez', 'la vaca'], e: '🐔' },
+    { n: [1, 2], p: '¿Qué animal vive en el agua y tiene aletas?', r: 'el pez', o: ['el gato', 'el caballo', 'el loro'], e: '🐟' },
+    { n: [1, 3], p: '¿Qué parte de la planta está bajo la tierra?', r: 'la raíz', o: ['la flor', 'la hoja', 'el fruto'], e: '🌱' },
+    { n: [1, 3], p: '¿Qué necesita una planta para crecer?', r: 'agua, luz y tierra', o: ['solo oscuridad', 'dulces', 'plástico'], e: '🪴' },
+    { n: [2, 3], p: '¿Qué animal come solo plantas (herbívoro)?', r: 'la vaca', o: ['el león', 'el tiburón', 'el águila'], e: '🐮' },
+    { n: [2, 4], p: '¿Cuántas patas tiene un insecto?', r: '6', o: ['4', '8', '10'], e: '🐞' },
+    { n: [2, 4], p: '¿Cuál de estos animales es un mamífero?', r: 'el perro', o: ['la rana', 'la culebra', 'el pato'], e: '🐶' },
+    { n: [3, 5], p: 'La araña tiene 8 patas. ¿Es un insecto?', r: 'No, es un arácnido', o: ['Sí, es un insecto', 'Es un pez', 'Es un ave'], e: '🕷️' },
+    { n: [3, 5], p: '¿Cómo se llama un animal que come plantas y carne?', r: 'omnívoro', o: ['herbívoro', 'carnívoro', 'insectívoro'] },
+    { n: [3, 5], p: '¿Qué animal es un anfibio?', r: 'la rana', o: ['el gato', 'la tortuga', 'la paloma'], e: '🐸' },
+    { n: [4, 6], p: '¿Cómo se llama el proceso con el que las plantas fabrican su alimento con la luz del sol?', r: 'fotosíntesis', o: ['respiración', 'digestión', 'germinación'], e: '☀️' },
+    { n: [4, 6], p: '¿Qué gas liberan las plantas que nosotros respiramos?', r: 'oxígeno', o: ['dióxido de carbono', 'humo', 'nitrógeno'] },
+    { n: [5, 6], p: '¿Qué animales tienen el cuerpo cubierto de escamas y son de sangre fría?', r: 'los reptiles', o: ['los mamíferos', 'las aves', 'los insectos'], e: '🦎' },
+    { n: [5, 6], p: '¿Qué parte de la flor se convierte en fruto?', r: 'el ovario', o: ['el pétalo', 'el tallo', 'la raíz'] },
+  ],
+  ambiente: [
+    { n: [1, 2], p: '¿Dónde debemos tirar la basura?', r: 'en el basurero', o: ['en la calle', 'en el río', 'en el suelo'], e: '🗑️' },
+    { n: [1, 3], p: '¿Qué podemos hacer para cuidar el agua?', r: 'cerrar el chorro', o: ['dejarlo abierto', 'tirar basura al río', 'jugar con la manguera'], e: '🚰' },
+    { n: [1, 3], p: '¿Qué nos dan los árboles?', r: 'sombra, oxígeno y frutos', o: ['basura', 'humo', 'ruido'], e: '🌳' },
+    { n: [2, 4], p: '¿Qué significa reciclar?', r: 'convertir desechos en cosas nuevas', o: ['tirar todo a la basura', 'quemar basura', 'comprar más cosas'], e: '♻️' },
+    { n: [2, 4], p: 'La cáscara de banano es basura…', r: 'orgánica', o: ['inorgánica', 'de vidrio', 'de metal'], e: '🍌' },
+    { n: [3, 5], p: 'Una botella de plástico es basura…', r: 'inorgánica', o: ['orgánica', 'que se pudre rápido', 'que sirve de abono'] },
+    { n: [3, 5], p: '¿Cuáles son las 3 R para cuidar el ambiente?', r: 'Reducir, reutilizar y reciclar', o: ['Romper, regar y rodar', 'Reír, reunir y rezar', 'Rápido, rico y redondo'] },
+    { n: [4, 6], p: '¿Qué tipo de energía viene del sol y no se agota?', r: 'energía solar (renovable)', o: ['gasolina', 'carbón', 'leña'], e: '🔆' },
+    { n: [4, 6], p: '¿Qué provoca la tala de árboles sin control?', r: 'deforestación', o: ['más lluvias limpias', 'más animales', 'menos basura'] },
+    { n: [5, 6], p: '¿Qué gas, producido al quemar combustibles, contribuye al calentamiento global?', r: 'dióxido de carbono', o: ['oxígeno', 'vapor de agua limpio', 'helio'] },
+  ],
+  solar: [
+    { n: [1, 2], p: '¿Qué astro nos da luz y calor durante el día?', r: 'el Sol', o: ['la Luna', 'una nube', 'un cometa'], e: '☀️' },
+    { n: [1, 2], p: '¿Qué vemos en el cielo de noche que cambia de forma?', r: 'la Luna', o: ['el Sol', 'el arcoíris', 'un avión'], e: '🌙' },
+    { n: [1, 3], p: '¿En qué planeta vivimos?', r: 'la Tierra', o: ['Marte', 'Júpiter', 'Venus'], e: '🌎' },
+    { n: [2, 4], p: '¿Cuántos planetas tiene el sistema solar?', r: '8', o: ['5', '10', '12'] },
+    { n: [2, 4], p: '¿Qué planeta es conocido como el "planeta rojo"?', r: 'Marte', o: ['Saturno', 'Mercurio', 'Neptuno'], e: '🔴' },
+    { n: [3, 5], p: '¿Cuál es el planeta más grande del sistema solar?', r: 'Júpiter', o: ['la Tierra', 'Marte', 'Mercurio'], e: '🪐' },
+    { n: [3, 5], p: '¿Qué planeta está más cerca del Sol?', r: 'Mercurio', o: ['Venus', 'la Tierra', 'Neptuno'] },
+    { n: [3, 5], p: '¿Qué planeta es famoso por sus grandes anillos?', r: 'Saturno', o: ['Marte', 'Venus', 'la Tierra'], e: '🪐' },
+    { n: [4, 6], p: 'El giro de la Tierra sobre sí misma produce el día y la noche. ¿Cómo se llama?', r: 'rotación', o: ['traslación', 'erupción', 'evaporación'] },
+    { n: [4, 6], p: '¿Cuánto tarda la Tierra en dar una vuelta alrededor del Sol?', r: 'un año (365 días)', o: ['un día', 'una semana', 'un mes'] },
+    { n: [5, 6], p: '¿Qué es el Sol?', r: 'una estrella', o: ['un planeta', 'un satélite', 'un cometa'] },
+    { n: [5, 6], p: '¿Cuál es el satélite natural de la Tierra?', r: 'la Luna', o: ['Marte', 'el Sol', 'Venus'] },
+  ],
+  agua: [
+    { n: [1, 2], p: '¿Qué necesitamos tomar todos los días para estar sanos?', r: 'agua pura', o: ['gaseosa', 'café', 'jugo de bolsa'], e: '💧' },
+    { n: [1, 3], p: 'El hielo es agua en estado…', r: 'sólido', o: ['líquido', 'gaseoso', 'caliente'], e: '🧊' },
+    { n: [2, 3], p: 'Cuando el agua hierve se convierte en…', r: 'vapor', o: ['hielo', 'arena', 'piedra'], e: '♨️' },
+    { n: [2, 4], p: '¿De dónde cae la lluvia?', r: 'de las nubes', o: ['de los árboles', 'de las montañas', 'del Sol'], e: '🌧️' },
+    { n: [3, 5], p: '¿Cuáles son los tres estados del agua?', r: 'sólido, líquido y gaseoso', o: ['frío, tibio y caliente', 'dulce, salado y amargo', 'grande, mediano y pequeño'] },
+    { n: [3, 5], p: '¿Cómo se llama cuando el agua se calienta y sube como vapor?', r: 'evaporación', o: ['precipitación', 'condensación', 'congelación'] },
+    { n: [4, 6], p: '¿Cómo se llama cuando el vapor se enfría y forma las nubes?', r: 'condensación', o: ['evaporación', 'filtración', 'fusión'] },
+    { n: [4, 6], p: 'La lluvia, el granizo y la nieve son formas de…', r: 'precipitación', o: ['evaporación', 'condensación', 'erosión'] },
+    { n: [5, 6], p: '¿A qué temperatura se congela el agua?', r: '0 °C', o: ['10 °C', '50 °C', '100 °C'] },
+    { n: [5, 6], p: 'Aproximadamente, ¿qué parte de la superficie de la Tierra está cubierta de agua?', r: 'tres cuartas partes', o: ['la mitad', 'una décima parte', 'toda'] },
+  ],
+};
+
+export const DEPARTAMENTOS = [
+  ['Alta Verapaz', 'Cobán'], ['Baja Verapaz', 'Salamá'], ['Chimaltenango', 'Chimaltenango'], ['Chiquimula', 'Chiquimula'],
+  ['El Progreso', 'Guastatoya'], ['Escuintla', 'Escuintla'], ['Guatemala', 'Guatemala'], ['Huehuetenango', 'Huehuetenango'],
+  ['Izabal', 'Puerto Barrios'], ['Jalapa', 'Jalapa'], ['Jutiapa', 'Jutiapa'], ['Petén', 'Flores'], ['Quetzaltenango', 'Quetzaltenango'],
+  ['Quiché', 'Santa Cruz del Quiché'], ['Retalhuleu', 'Retalhuleu'], ['Sacatepéquez', 'Antigua Guatemala'], ['San Marcos', 'San Marcos'],
+  ['Santa Rosa', 'Cuilapa'], ['Sololá', 'Sololá'], ['Suchitepéquez', 'Mazatenango'], ['Totonicapán', 'Totonicapán'], ['Zacapa', 'Zacapa'],
+];
+
+export const GUATEMALA = {
+  departamentos: [
+    { n: [1, 3], p: '¿Cuántos departamentos tiene Guatemala?', r: '22', o: ['10', '15', '32'] },
+    { n: [1, 3], p: '¿Cuál es la capital de Guatemala?', r: 'Ciudad de Guatemala', o: ['Antigua Guatemala', 'Cobán', 'Flores'] },
+    { n: [2, 4], p: '¿Cuál es el departamento más grande de Guatemala?', r: 'Petén', o: ['Sacatepéquez', 'Guatemala', 'Sololá'] },
+    { n: [3, 6], p: '¿Cuál es el departamento más pequeño de Guatemala?', r: 'Sacatepéquez', o: ['Petén', 'Huehuetenango', 'Izabal'] },
+    { n: [3, 6], p: '¿En qué departamento está el lago de Atitlán?', r: 'Sololá', o: ['Izabal', 'Jutiapa', 'Zacapa'] },
+    { n: [3, 6], p: '¿Qué departamento tiene costa en el mar Caribe?', r: 'Izabal', o: ['Escuintla', 'Quiché', 'Chimaltenango'] },
+  ],
+  simbolos: [
+    { n: [1, 3], p: '¿Cuál es el ave nacional de Guatemala?', r: 'el quetzal', o: ['el loro', 'la paloma', 'el águila'], e: '🐦' },
+    { n: [1, 3], p: '¿Cuál es la flor nacional de Guatemala?', r: 'la monja blanca', o: ['la rosa', 'el girasol', 'el tulipán'], e: '🌸' },
+    { n: [1, 3], p: '¿De qué colores es la bandera de Guatemala?', r: 'azul celeste y blanco', o: ['rojo y amarillo', 'verde y blanco', 'negro y rojo'], e: '🇬🇹' },
+    { n: [2, 4], p: '¿Cuál es el árbol nacional de Guatemala?', r: 'la ceiba', o: ['el pino', 'el roble', 'el mango'], e: '🌳' },
+    { n: [2, 4], p: '¿Cuál es el instrumento nacional de Guatemala?', r: 'la marimba', o: ['la guitarra', 'el piano', 'el violín'], e: '🎶' },
+    { n: [2, 5], p: '¿Cómo se llama la moneda de Guatemala?', r: 'el quetzal', o: ['el dólar', 'el peso', 'el colón'], e: '💰' },
+    { n: [3, 5], p: '¿Qué fecha aparece en el pergamino del Escudo Nacional?', r: '15 de septiembre de 1821', o: ['1 de enero de 1900', '25 de diciembre de 1821', '12 de octubre de 1492'] },
+    { n: [4, 6], p: '¿Quién escribió la letra del Himno Nacional de Guatemala?', r: 'José Joaquín Palma', o: ['Rafael Álvarez Ovalle', 'Miguel Ángel Asturias', 'Rafael Landívar'] },
+    { n: [4, 6], p: '¿Quién compuso la música del Himno Nacional?', r: 'Rafael Álvarez Ovalle', o: ['José Joaquín Palma', 'Ricardo Arjona', 'Rafael Landívar'] },
+    { n: [4, 6], p: '¿Cuántas franjas verticales tiene la bandera de Guatemala?', r: '3', o: ['2', '4', '5'] },
+  ],
+  historia: [
+    { n: [1, 3], p: '¿Qué día celebramos la Independencia de Guatemala?', r: '15 de septiembre', o: ['1 de enero', '25 de diciembre', '1 de mayo'], e: '🎉' },
+    { n: [2, 4], p: '¿En qué año se firmó la Independencia de Centroamérica?', r: '1821', o: ['1492', '1900', '1996'] },
+    { n: [2, 4], p: '¿Qué civilización antigua construyó Tikal?', r: 'los mayas', o: ['los romanos', 'los egipcios', 'los incas'], e: '🛕' },
+    { n: [3, 5], p: '¿Quién es considerado el héroe nacional de Guatemala?', r: 'Tecún Umán', o: ['Pedro de Alvarado', 'Cristóbal Colón', 'Simón Bolívar'] },
+    { n: [3, 5], p: '¿Cómo se llama el libro sagrado de los k\'iche\'?', r: 'Popol Vuh', o: ['Don Quijote', 'El Principito', 'Rabinal Achí'] },
+    { n: [4, 6], p: 'Los mayas usaban un sistema de numeración de base…', r: '20', o: ['10', '5', '100'] },
+    { n: [4, 6], p: '¿Qué ciudad fue capital antes de la actual Ciudad de Guatemala?', r: 'Antigua Guatemala', o: ['Quetzaltenango', 'Cobán', 'Escuintla'] },
+    { n: [5, 6], p: '¿En qué año se firmaron los Acuerdos de Paz en Guatemala?', r: '1996', o: ['1821', '1944', '2000'] },
+    { n: [5, 6], p: '¿Qué terremotos obligaron a trasladar la capital desde Antigua Guatemala?', r: 'los de 1773', o: ['los de 1976', 'los de 1917', 'los de 2012'] },
+  ],
+  geografia: [
+    { n: [1, 3], p: '¿Cómo se llaman las montañas que a veces echan humo y lava?', r: 'volcanes', o: ['desiertos', 'glaciares', 'llanuras'], e: '🌋' },
+    { n: [2, 4], p: '¿Qué país está al norte de Guatemala?', r: 'México', o: ['Honduras', 'El Salvador', 'Panamá'] },
+    { n: [2, 4], p: '¿Qué océano está al sur de Guatemala?', r: 'el océano Pacífico', o: ['el océano Atlántico', 'el océano Índico', 'el océano Ártico'], e: '🌊' },
+    { n: [3, 5], p: '¿Cuál es el volcán más alto de Guatemala y de Centroamérica?', r: 'Tajumulco', o: ['Pacaya', 'Agua', 'Fuego'] },
+    { n: [3, 5], p: '¿Cuál es el lago más grande de Guatemala?', r: 'el lago de Izabal', o: ['el lago de Atitlán', 'el lago de Amatitlán', 'el lago Petén Itzá'] },
+    { n: [3, 6], p: '¿Con cuántos países tiene frontera Guatemala?', r: '4', o: ['2', '3', '6'] },
+    { n: [4, 6], p: '¿En qué departamento está el volcán Tajumulco?', r: 'San Marcos', o: ['Sololá', 'Escuintla', 'Petén'] },
+    { n: [4, 6], p: '¿Qué sierra se encuentra en Huehuetenango?', r: 'los Cuchumatanes', o: ['las Minas', 'Madre Vieja', 'los Andes'] },
+    { n: [5, 6], p: '¿Cuáles son los países vecinos de Guatemala?', r: 'México, Belice, Honduras y El Salvador', o: ['México, Panamá, Cuba y Belice', 'Honduras, Costa Rica, Nicaragua y Panamá', 'Belice, Colombia, Cuba y México'] },
+  ],
+  cultura: [
+    { n: [1, 3], p: '¿Qué volamos en Guatemala el 1 de noviembre, Día de Todos los Santos?', r: 'barriletes', o: ['trompos', 'aviones', 'globos de agua'], e: '🪁' },
+    { n: [1, 3], p: '¿Cómo se llama la blusa tejida tradicional de las mujeres mayas?', r: 'huipil', o: ['poncho', 'kimono', 'sombrero'] },
+    { n: [2, 4], p: '¿Qué comida tradicional se prepara para el 1 de noviembre?', r: 'el fiambre', o: ['la pizza', 'el sushi', 'la hamburguesa'], e: '🥗' },
+    { n: [2, 4], p: '¿Qué se elabora en las calles de Antigua Guatemala en Semana Santa?', r: 'alfombras de aserrín y flores', o: ['castillos de arena', 'muñecos de nieve', 'puentes de madera'] },
+    { n: [3, 5], p: '¿Cuántos idiomas se reconocen en Guatemala (incluido el español)?', r: '25', o: ['5', '10', '50'] },
+    { n: [3, 5], p: '¿En qué municipio son famosos los barriletes gigantes?', r: 'Sumpango', o: ['Flores', 'Puerto Barrios', 'Mazatenango'] },
+    { n: [4, 6], p: '¿Cuál de estos es un idioma maya de Guatemala?', r: 'k\'iche\'', o: ['quechua', 'náhuatl', 'guaraní'] },
+    { n: [4, 6], p: '¿Qué platillo es típico de Alta Verapaz?', r: 'el kak\'ik', o: ['la pupusa', 'la paella', 'el ceviche'] },
+    { n: [5, 6], p: 'Además de los idiomas mayas y el español, en Guatemala se hablan…', r: 'el xinka y el garífuna', o: ['el inglés y el francés', 'el portugués y el italiano', 'el alemán y el chino'] },
+  ],
+};

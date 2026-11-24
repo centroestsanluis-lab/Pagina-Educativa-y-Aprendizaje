@@ -1,0 +1,15 @@
+{
+  "firestore": { "rules": "firestore.rules", "indexes": "firestore.indexes.json" },
+  "hosting": {
+    "public": "..",
+    "ignore": ["firebase/**", "apps-script/**", "herramientas/**", "pruebas/**", "manuales/**", "**/.*"],
+    "headers": [
+      { "source": "**/*.@(js|css|webmanifest)", "headers": [{ "key": "Cache-Control", "value": "no-cache" }] },
+      { "source": "**", "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" }
+      ] }
+    ]
+  }
+}
