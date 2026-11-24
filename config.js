@@ -16,7 +16,7 @@ window.CESL_CONFIG = {
       projectId: "cesl-digital",
       storageBucket: "cesl-digital.firebasestorage.app",
       messagingSenderId: "670703542424",
-      appId: "1:670703542424:web:9f0037a03d4401580730ed""
+      appId: "1:670703542424:web:9f0037a03d4401580730ed"
   },
 
   // Dirección de la "Aplicación web" de Google Apps Script
