@@ -93,7 +93,16 @@ export const firebase = {
       // El bloqueo principal lo hacen las reglas (campo "activo"); si hay servidor, también se bloquea el inicio de sesión.
       if (servidorConfigurado()) await llamarServidor('estadoCuenta', { uid, activa });
     },
-    async borrarCuenta(uid) { if (servidorConfigurado()) await llamarServidor('borrarCuenta', { uid }); },
+    async borrarCuenta(uid) {
+      if (!servidorConfigurado()) throw new ErrorCesl('sin-servidor', 'Sin Google Apps Script la cuenta de acceso no se puede borrar desde la plataforma.');
+      await llamarServidor('borrarCuenta', { uid });
+    },
+    /** Reutiliza una cuenta de acceso que quedó sin perfil. Devuelve el uid. */
+    async recuperarCuenta(email, clave) {
+      if (!servidorConfigurado()) throw new ErrorCesl('sin-servidor', 'Para reutilizar la cuenta hace falta Google Apps Script.');
+      return (await llamarServidor('recuperarCuenta', { email, clave })).uid;
+    },
+    diagnostico: () => llamarServidor('diagnostico'),
     servidorDisponible: () => servidorConfigurado(),
   },
 

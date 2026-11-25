@@ -140,6 +140,15 @@ export const demo = {
       const email = Object.keys(bd.cuentas).find((e) => bd.cuentas[e].uid === uid);
       if (email) { delete bd.cuentas[email]; guardar(); }
     },
+    async recuperarCuenta(email, clave) {
+      if (ctx().yo?.rol !== 'admin') throw denegado();
+      const c = bd.cuentas[email.toLowerCase()];
+      if (!c) throw new ErrorCesl('not-found', 'No existe una cuenta de acceso con ese usuario.');
+      if (bd.datos.usuarios?.[c.uid]) throw new ErrorCesl('auth/email-already-in-use');
+      c.hash = await hash(clave); c.desactivada = false; guardar();
+      return c.uid;
+    },
+    async diagnostico() { return { version: 'demostración', pasos: [{ nombre: 'Modo demostración', ok: true, detalle: 'No usa servidor' }] }; },
     servidorDisponible: () => true,
   },
 

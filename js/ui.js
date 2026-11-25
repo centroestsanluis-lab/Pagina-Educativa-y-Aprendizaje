@@ -123,6 +123,8 @@ export const id = () => Date.now().toString(36) + Math.random().toString(36).sli
 
 /** Mensajes de error comprensibles para personas sin conocimientos técnicos. */
 export function mensajeError(err) {
+  // El servidor de Apps Script ya explica el problema: se muestra tal cual.
+  if (err?.deServidor && err.mensaje) return 'Servidor (Apps Script): ' + err.mensaje;
   const c = err?.code || err?.message || String(err);
   const mapa = {
     'auth/invalid-credential': 'Usuario o contraseña incorrectos.',

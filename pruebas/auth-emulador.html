@@ -70,6 +70,15 @@
     await fbStore.auth.recuperar('maestra.rosa@gmail.com');
     const codigos = await fetch(`${EMU}/emulator/v1/projects/demo-cesl/oobCodes`).then((r) => r.json());
     ok('Recuperación por correo genera un enlace real de restablecimiento', codigos.oobCodes?.some((c) => c.email === 'maestra.rosa@gmail.com' && c.requestType === 'PASSWORD_RESET'), JSON.stringify(codigos).slice(0, 200));
+    // Reutilizar cuenta sin perfil (Apps Script: recuperarCuenta) y diagnóstico (lookup por uid)
+    const porCorreo = await rest('projects/demo-cesl/accounts:lookup', { email: [alumnoEmail] });
+    ok('Servidor: buscar cuenta por usuario devuelve su identificador', porCorreo.users?.[0]?.localId === uidAlumno, JSON.stringify(porCorreo).slice(0, 200));
+    const porUid = await rest('projects/demo-cesl/accounts:lookup', { localId: [uidAlumno] });
+    ok('Servidor: diagnóstico de administración de cuentas responde', porUid.users?.length === 1, JSON.stringify(porUid).slice(0, 200));
+    await rest('projects/demo-cesl/accounts:update', { localId: uidAlumno, password: '135799', disableUser: false });
+    await fbStore.auth.entrar(alumnoEmail, '135799');
+    ok('Servidor: la cuenta reutilizada entra con la contraseña nueva', fbStore.auth.uid() === uidAlumno);
+    await fbStore.auth.salir();
     // Borrar cuenta
     await rest('projects/demo-cesl/accounts:delete', { localId: uidDoc });
     ok('Eliminar cuenta de acceso', (await err(() => fbStore.auth.entrar('maestra.rosa@gmail.com', 'Temp2026x'))).startsWith('auth/'));

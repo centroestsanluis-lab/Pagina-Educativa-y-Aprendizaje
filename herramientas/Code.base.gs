@@ -17,7 +17,7 @@ var CONFIG = {
   API_KEY: 'PEGUE-AQUI-LA-apiKey'           // ejemplo: AIzaSy...
 };
 
-var VERSION = 'CESL Apps Script 1.1';
+var VERSION = 'CESL Apps Script 1.2';
 var CARPETA_RAIZ = 'CESL Digital';
 var COLECCIONES = ['config', 'grados', 'materias', 'usuarios', 'temas', 'recursos', 'actividades', 'claves', 'entregas', 'resultados', 'bitacora', 'practica', 'juegos'];
 
@@ -27,15 +27,18 @@ function doPost(e) {
     var datos = JSON.parse(e.postData.contents);
     var accion = datos.accion;
     if (accion === 'estado') return responder({ ok: true, version: VERSION, proyecto: CONFIG.PROYECTO });
+    if (accion === 'diagnostico') return responder(diagnostico(datos.token));
     var quien = verificarToken(datos.token);           // ¿quién llama? (token de Firebase)
     var perfil = leerDoc('usuarios/' + quien);
-    if (!perfil || perfil.activo !== true) throw error('permission-denied', 'Cuenta no activa.');
+    if (!perfil) throw error('permission-denied', 'El servidor no encontró su perfil en la base de datos del proyecto "' + CONFIG.PROYECTO + '". Revise que PROYECTO en Code.gs sea exactamente el ID del proyecto de Firebase (Configuración → Probar conexión).');
+    if (perfil.activo !== true) throw error('permission-denied', 'Su cuenta está desactivada.');
     switch (accion) {
       case 'calificar': return responder(calificarEntrega(datos.entregaId, quien, perfil));
       case 'subirArchivo': exigir(perfil.rol === 'admin' || perfil.rol === 'docente'); return responder(subirArchivo(datos));
       case 'restablecerClave': exigir(perfil.rol === 'admin'); return responder(restablecerClave(datos.uid, datos.clave));
       case 'estadoCuenta': exigir(perfil.rol === 'admin'); return responder(estadoCuenta(datos.uid, datos.activa));
       case 'borrarCuenta': exigir(perfil.rol === 'admin'); return responder(borrarCuenta(datos.uid));
+      case 'recuperarCuenta': exigir(perfil.rol === 'admin'); return responder(recuperarCuenta(datos.email, datos.clave));
       case 'respaldar': exigir(perfil.rol === 'admin'); return responder(respaldar());
       default: throw error('accion', 'Acción desconocida.');
     }
@@ -60,7 +63,11 @@ function verificarToken(token) {
     method: 'post', contentType: 'application/json', payload: JSON.stringify({ idToken: token }), muteHttpExceptions: true
   });
   var j = JSON.parse(r.getContentText());
-  if (r.getResponseCode() !== 200 || !j.users || !j.users.length) throw error('permission-denied', 'Sesión no válida. Vuelva a iniciar sesión.');
+  if (r.getResponseCode() !== 200 || !j.users || !j.users.length) {
+    var motivo = (j.error && j.error.message) || '';
+    if (/API_KEY|API key/i.test(motivo)) throw error('servidor', 'El API_KEY escrito en Code.gs no es válido. Cópielo de nuevo desde Firebase.');
+    throw error('permission-denied', 'Sesión no válida (' + (motivo || 'sin detalle') + '). Cierre sesión y vuelva a entrar. Si sigue, revise API_KEY y PROYECTO en Code.gs.');
+  }
   if (j.users[0].disabled) throw error('auth/user-disabled', 'Cuenta desactivada.');
   return j.users[0].localId;
 }
@@ -157,6 +164,45 @@ function restablecerClave(uid, clave) {
 }
 function estadoCuenta(uid, activa) { pedir(urlCuentas(':update'), { method: 'post', payload: { localId: uid, disableUser: !activa } }); return { ok: true }; }
 function borrarCuenta(uid) { pedir(urlCuentas(':delete'), { method: 'post', payload: { localId: uid } }); return { ok: true }; }
+/** Reutiliza una cuenta de acceso que quedó sin perfil (por ejemplo, de un usuario eliminado). */
+function recuperarCuenta(email, clave) {
+  if (!email || !clave || String(clave).length < 6) throw error('auth/weak-password', 'La contraseña debe tener al menos 6 caracteres.');
+  var r = pedir(urlCuentas(':lookup'), { method: 'post', payload: { email: [String(email).toLowerCase()] } }) || {};
+  if (!r.users || !r.users.length) throw error('not-found', 'No existe una cuenta de acceso con ese usuario.');
+  var uid = r.users[0].localId;
+  var perfil = leerDoc('usuarios/' + uid);
+  if (perfil) throw error('auth/email-already-in-use', 'Ese usuario ya pertenece a ' + perfil.nombre + '. Elija otro usuario.');
+  pedir(urlCuentas(':update'), { method: 'post', payload: { localId: uid, password: String(clave), disableUser: false } });
+  return { ok: true, uid: uid };
+}
+
+/** Revisa paso a paso que el servidor esté bien configurado (botón "Probar conexión"). */
+function diagnostico(token) {
+  var pasos = [];
+  function paso(nombre, fn, ayuda) {
+    try { var d = fn(); pasos.push({ nombre: nombre, ok: true, detalle: d || '' }); return true; }
+    catch (e) { pasos.push({ nombre: nombre, ok: false, detalle: (e.mensaje || String(e.message || e)) + (ayuda ? ' → ' + ayuda : '') }); return false; }
+  }
+  var uid = null;
+  var listo = paso('Datos en Code.gs', function () {
+    if (CONFIG.PROYECTO.indexOf('PEGUE') === 0 || CONFIG.API_KEY.indexOf('PEGUE') === 0) throw new Error('Faltan PROYECTO o API_KEY');
+    return 'Proyecto: ' + CONFIG.PROYECTO;
+  }, 'Escriba el ID del proyecto y el apiKey al inicio de Code.gs y vuelva a implementar (Nueva versión).');
+  if (listo) paso('Verificar la sesión (API_KEY)', function () { uid = verificarToken(token); return 'Correcto'; }, 'Revise que API_KEY sea igual al apiKey de config.js.');
+  if (listo) paso('Leer la base de datos (PROYECTO)', function () {
+    var d = leerDoc('config/institucion');
+    if (!d) throw new Error('No se encontró la configuración institucional en el proyecto "' + CONFIG.PROYECTO + '"');
+    return d.nombrePlataforma || 'Correcto';
+  }, 'Revise que PROYECTO sea exactamente el ID del proyecto (Firebase → Configuración del proyecto).');
+  if (uid) paso('Encontrar su perfil', function () { var p = leerDoc('usuarios/' + uid); if (!p) throw new Error('No se encontró'); return p.nombre + ' (' + p.rol + ')'; }, 'Revise PROYECTO en Code.gs.');
+  if (uid) paso('Administrar cuentas (restablecer, desactivar, borrar)', function () {
+    var r = pedir(urlCuentas(':lookup'), { method: 'post', payload: { localId: [uid] } });
+    if (!r || !r.users) throw new Error('Sin respuesta');
+    return 'Correcto';
+  }, 'Use la misma cuenta de Google dueña del proyecto de Firebase. Si dice "API no habilitada": Apps Script → Configuración → Proyecto de Google Cloud → Cambiar proyecto → número del proyecto de Firebase.');
+  paso('Google Drive', function () { return 'Carpeta "' + carpetaRaiz().getName() + '"'; }, 'Ejecute la función instalar y acepte los permisos.');
+  return { ok: true, version: VERSION, pasos: pasos };
+}
 
 // ------------------------------------------------------------------ Google Drive
 function carpeta(padre, nombre) {

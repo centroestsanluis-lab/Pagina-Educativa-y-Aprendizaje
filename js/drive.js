@@ -24,7 +24,7 @@ export async function llamarServidor(accion, datos = {}) {
   } catch { throw new ErrorCesl('auth/network-request-failed'); }
   let j;
   try { j = await r.json(); } catch { throw new ErrorCesl('servidor', 'El servidor de Apps Script no respondió correctamente. Revise que esté publicado para "Cualquier usuario".'); }
-  if (!j.ok) throw new ErrorCesl(j.codigo || 'servidor', j.error || 'Error en el servidor.');
+  if (!j.ok) { const e = new ErrorCesl(j.codigo || 'servidor', j.error || 'Error en el servidor.'); e.deServidor = true; throw e; }
   return j;
 }
 

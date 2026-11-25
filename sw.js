@@ -1,7 +1,7 @@
 // Service worker de CESL Digital: guarda la "carcasa" de la app para que
 // abra rápido en las tablets. Los datos (tareas, notas) siempre vienen del
 // servidor; nunca se guardan aquí.
-const VERSION = 'cesl-v1.1.0';
+const VERSION = 'cesl-v1.2.0';
 const ARCHIVOS = [
   './', 'index.html', 'config.js', 'manifest.webmanifest', 'css/app.css',
   'fonts/nunito-latin-600-normal.woff2', 'fonts/nunito-latin-800-normal.woff2', 'fonts/nunito-latin-900-normal.woff2',

@@ -191,7 +191,7 @@ function editarUsuario(u, rol, listo) {
       if (real && !esCorreoReal(real)) { aviso('El correo no es válido.', 'error'); return false; }
       if (clave.value.length < 6) { aviso('La contraseña debe tener al menos 6 caracteres.', 'error'); return false; }
       const email = real || correoDeUsuario(us);
-      const uid = await store.admin.crearCuenta(email, clave.value);
+      const uid = await crearOReutilizarCuenta(email, clave.value);
       try {
         await store.set('usuarios', uid, { ...datos, usuario: real || us, email, activo: true, debeCambiarPassword: obligar.querySelector('input').checked, creado: store.AHORA });
       } catch (e) { throw new ErrorCesl('perfil', 'Se creó el acceso pero no el perfil: ' + mensajeError(e) + ' Intente "Restablecer" o consulte el manual.'); }
@@ -263,14 +263,39 @@ async function cambiarActivo(u, listo) {
 
 async function eliminarUsuario(u, listo) {
   const ok = await confirmar(h('div', null, h('p', null, `¿Eliminar a ${u.nombre}?`),
-    h('p', { class: 'mensaje-error' }, 'Recomendación: use "Desactivar". Eliminar borra el perfil; las notas ya registradas se conservan pero el usuario ya no podrá entrar.')), { si: 'Eliminar definitivamente' });
+    h('p', { class: 'mensaje-error' }, 'Recomendación: use "Desactivar". Eliminar borra el perfil y la cuenta de acceso; las notas ya registradas se conservan.')), { si: 'Eliminar definitivamente' });
   if (!ok) return;
+  // 1) Primero la cuenta de acceso; si falla, se avisa en lugar de dejarla "huérfana" sin decir nada.
+  try { await store.admin.borrarCuenta(u.id); }
+  catch (e) {
+    const seguir = await modal({ titulo: 'No se pudo borrar la cuenta de acceso', contenido: h('div', null,
+      h('p', { class: 'mensaje-error' }, mensajeError(e)),
+      h('p', null, 'Si continúa, se borrará solo el perfil y el usuario ', h('b', null, u.usuario), ' quedará ocupado. Podrá reutilizarlo al crearlo de nuevo, o borrarlo en la consola de Firebase → Authentication → Usuarios.'),
+      h('p', null, 'Mejor opción: use "Desactivar" y revise Configuración → Probar conexión.')),
+    botones: [{ texto: 'Cancelar', clase: 'claro', valor: false }, { texto: 'Borrar solo el perfil', clase: 'rojo', valor: true }] });
+    if (!seguir) return;
+  }
   await intentar(async () => {
     await store.del('usuarios', u.id);
-    try { await store.admin.borrarCuenta(u.id); } catch (e) { console.warn(e); }
     registrar('Eliminó usuario', `${u.nombre} (${u.usuario})`, S.yo);
   }, 'Usuario eliminado');
   listo();
+}
+
+/** Crea la cuenta de acceso; si ya existe una cuenta sin perfil (de un usuario eliminado), ofrece reutilizarla. */
+async function crearOReutilizarCuenta(email, clave, preguntar = true) {
+  try { return await store.admin.crearCuenta(email, clave); }
+  catch (e) {
+    if (e.code !== 'auth/email-already-in-use') throw e;
+    if (preguntar) {
+      const si = await modal({ titulo: 'Ese usuario ya tiene una cuenta de acceso', contenido: h('div', null,
+        h('p', null, `Ya existe una cuenta de acceso para "${email.split('@')[0]}". Suele pasar cuando un usuario se eliminó antes.`),
+        h('p', null, 'Si nadie más la está usando, se puede reutilizar con la contraseña nueva.')),
+      botones: [{ texto: 'Cancelar', clase: 'claro', valor: false }, { texto: 'Reutilizar la cuenta', clase: 'verde', valor: true }] });
+      if (!si) throw new ErrorCesl('cancelado', 'Operación cancelada. Puede elegir otro usuario.');
+    }
+    return await store.admin.recuperarCuenta(email, clave);
+  }
 }
 
 async function importarAlumnos() {
@@ -302,7 +327,7 @@ async function importarAlumnos() {
     const clave = generarClave('alumno');
     try {
       const email = correoDeUsuario(x.usuario);
-      const uid = await store.admin.crearCuenta(email, clave);
+      const uid = await crearOReutilizarCuenta(email, clave, false);
       await store.set('usuarios', uid, { nombre: x.nombre, rol: 'alumno', usuario: x.usuario, email, gradoId: x.grado.id, seccion: x.seccion, activo: true, debeCambiarPassword: false, creado: store.AHORA });
       creadas.push({ nombre: x.nombre, usuario: x.usuario, clave, grado: x.grado.nombre });
     } catch (e) { errores.push(`${x.nombre}: ${mensajeError(e)}`); }
@@ -545,9 +570,22 @@ async function vistaConfig(cont) {
       h('p', null, 'Borra todo lo hecho en este dispositivo y vuelve a cargar los ejemplos.'),
       h('button', { class: 'btn peligro', onclick: async () => { if (await confirmar('Se borrarán todos los datos de demostración de este dispositivo.', { si: 'Reiniciar' })) { await store.reiniciarDemo(); location.hash = '#/'; location.reload(); } } }, 'Reiniciar demostración')) : null);
   async function probar() {
-    estado.textContent = 'Probando…';
-    try { const r = await llamarServidor('estado'); estado.className = 'etiqueta-estado e-verde'; estado.textContent = `Conectado ✔ (${r.version || ''})`; }
-    catch (e) { estado.className = 'etiqueta-estado e-rojo'; estado.textContent = mensajeError(e); }
+    estado.className = 'etiqueta-estado e-gris'; estado.textContent = 'Probando…';
+    try {
+      const r = await store.admin.diagnostico();
+      const todoBien = r.pasos.every((p) => p.ok);
+      estado.className = 'etiqueta-estado ' + (todoBien ? 'e-verde' : 'e-rojo');
+      estado.textContent = todoBien ? `Todo correcto ✔ (${r.version})` : 'Hay un problema ✖';
+      modal({ titulo: 'Diagnóstico del servidor (Apps Script)', ancho: true, contenido: h('div', null,
+        h('p', { class: 'texto-suave' }, `Versión del servidor: ${r.version}`),
+        h('div', { class: 'tabla-envoltura' }, h('table', null, h('tbody', null, r.pasos.map((p) => h('tr', null,
+          h('td', { class: 'num' }, p.ok ? '✅' : '❌'), h('td', null, h('b', null, p.nombre)), h('td', { class: 'chico' }, p.detalle)))))),
+        !todoBien ? h('p', { class: 'mensaje-info', style: { marginTop: '12px' } }, 'Corrija el primer paso marcado con ❌. Después de cambiar Code.gs: Implementar → Administrar implementaciones → ✏️ → Nueva versión → Implementar.') : null) });
+    } catch (e) {
+      estado.className = 'etiqueta-estado e-rojo'; estado.textContent = 'Sin respuesta';
+      modal({ titulo: 'El servidor no respondió', contenido: h('div', null, h('p', { class: 'mensaje-error' }, mensajeError(e)),
+        h('p', null, 'Si el mensaje habla de una acción desconocida, falta actualizar Code.gs a la versión 1.2 y publicar una nueva versión de la implementación.')) });
+    }
   }
 }
 
