@@ -64,3 +64,16 @@ Los alumnos tienen 25 juegos de Matemáticas, Comunicación y Lenguaje, Ciencias
 - **Un alumno olvidó su contraseña**: avise a la administración; los docentes no pueden ver contraseñas.
 - **Un alumno no ve la actividad**: revise que esté *Publicada*, que la fecha "Disponible desde" ya pasó y que el tema no esté oculto.
 - **La nota no aparece al alumno**: revise "Mostrar la nota" o use "📢 Publicar notas".
+
+## Juegos de aprendizaje (crear y actualizar juegos de Aprende Jugando)
+Menú **🧩 Juegos de aprendizaje**. Puede crear juegos **solo en las materias que imparte**; los de otras materias puede probarlos pero no cambiarlos.
+
+**Juego de vocabulario** (ideal para Inglés): escriba una lista de palabras con su traducción, un dibujo (emoji, opcional) y para qué grados es cada palabra. Con esa sola lista la plataforma arma 4 juegos distintos que se mezclan: traducir de ida, traducir de vuelta, adivinar por el dibujo y ordenar las letras. Si elige pronunciación "Inglés", aparece el botón 🔊 para escuchar la palabra.
+
+**Juego de preguntas**: cada pregunta con su respuesta correcta y hasta 3 incorrectas. Sirve para cualquier materia.
+
+**Pegar lista**: copie las columnas desde Excel o Google Sheets (*palabra · traducción · emoji · desde grado · hasta grado*) y pulse "📋 Pegar lista".
+
+Botones: **▶️ Probar**, **✏️ Editar**, **🙈 Ocultar / 👁️ Mostrar** y **🗑️ Eliminar**. Los juegos aparecen a los alumnos en Aprende Jugando, en la sección de su materia, solo en los niveles que tengan palabras o preguntas.
+
+**Consejo:** cada cierto tiempo agregue palabras nuevas u oculte las que ya dominan; así el juego sigue siendo un reto.

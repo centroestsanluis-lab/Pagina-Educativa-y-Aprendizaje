@@ -152,7 +152,7 @@ async def main():
         await entrar(pg, 'maestra.ana', 'docente123')
         await pg.wait_for_selector('.mosaico')
         clases = await pg.locator('.mosaico').all_inner_texts()
-        ok('Docente ve solo sus 3 clases asignadas', len(clases) == 3, str(clases))
+        ok('Docente ve solo sus 4 clases asignadas', len(clases) == 4, str(clases))
         await foto(pg, '11-docente-inicio')
         r = await permisos(pg, """
           await p('ver alumnos de 3.º (su grado)', () => store.list('usuarios', [['rol','==','alumno'],['gradoId','==','g3']]));
@@ -344,9 +344,9 @@ async def main():
         await m.get_by_label('Secciones').fill('A, B'); await m.get_by_role('button', name='Guardar').click(); await pg.wait_for_timeout(400)
         ok('Agregar secciones a un grado', 'A, B' in await pg.locator('.tarjeta', has_text='Primero primaria').inner_text())
         await pg.goto(URL + '#/materias'); await pg.get_by_role('button', name='➕ Nueva materia').click()
-        await m.get_by_label('Nombre').fill('Inglés'); await m.get_by_label('Primero primaria').check(); await m.get_by_label('Segundo primaria').check()
-        await m.get_by_role('button', name='Guardar').click(); await pg.wait_for_selector('text=Inglés')
-        ok('Crear materia y asignarla a grados', '1° · 2°' in await pg.locator('.item', has_text='Inglés').inner_text())
+        await m.get_by_label('Nombre').fill('Música'); await m.get_by_label('Primero primaria').check(); await m.get_by_label('Segundo primaria').check()
+        await m.get_by_role('button', name='Guardar').click(); await pg.wait_for_selector('text=Música')
+        ok('Crear materia y asignarla a grados', '1° · 2°' in await pg.locator('.item', has_text='Música').inner_text())
         await foto(pg, '21-admin-materias')
         # diseño institucional
         await pg.goto(URL + '#/diseno'); await pg.wait_for_selector('text=Colores institucionales')
@@ -428,4 +428,5 @@ async def main():
     json.dump([{'prueba': n, 'ok': o, 'detalle': d} for n, o, d in resultados], open(os.path.join(CAP, 'resultado.json'), 'w'), ensure_ascii=False, indent=1)
     sys.exit(0 if bien == total else 1)
 
-asyncio.run(main())
+if __name__ == '__main__':
+    asyncio.run(main())

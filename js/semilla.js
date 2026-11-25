@@ -1,6 +1,7 @@
 // Datos iniciales: configuración institucional, grados y materias.
 // En modo demostración también crea usuarios y actividades de ejemplo.
 import { claseDe } from './store/permisos.js';
+import { documentosPaqueteIngles } from './juegos/personalizados.js';
 
 export const COLORES_BASE = {
   rojo: '#E53935', azul: '#1E88E5', verde: '#43A047', amarillo: '#FDD835',
@@ -65,10 +66,10 @@ export async function datosDemo(hash) {
     cuentas[email] = { uid, hash: await hash(clave), desactivada: false };
     usuarios[uid] = { usuario, email, activo: true, debeCambiarPassword: false, creado: ahora, ...datos };
   };
-  const clasesAna = [claseDe('g3', 'matematicas'), claseDe('g3', 'comunicacion'), claseDe('g4', 'matematicas')];
+  const clasesAna = [claseDe('g3', 'matematicas'), claseDe('g3', 'comunicacion'), claseDe('g4', 'matematicas'), claseDe('g3', 'ingles')];
   await persona('u-admin', 'admin', 'admin123', { nombre: 'Administración CESL', rol: 'admin' });
-  await persona('u-ana', 'maestra.ana', 'docente123', { nombre: 'Ana Morales', rol: 'docente', clases: clasesAna, grados: ['g3', 'g4'] });
-  await persona('u-jorge', 'maestro.jorge', 'docente123', { nombre: 'Jorge Castillo', rol: 'docente', clases: [claseDe('g5', 'ciencias-naturales')], grados: ['g5'] });
+  await persona('u-ana', 'maestra.ana', 'docente123', { nombre: 'Ana Morales', rol: 'docente', clases: clasesAna, grados: ['g3', 'g4'], materias: ['matematicas', 'comunicacion', 'ingles'] });
+  await persona('u-jorge', 'maestro.jorge', 'docente123', { nombre: 'Jorge Castillo', rol: 'docente', clases: [claseDe('g5', 'ciencias-naturales')], grados: ['g5'], materias: ['ciencias-naturales'] });
   const alumnos = [
     ['u-luis', 'luis.perez', 'Luis Pérez', 'g3'], ['u-sofia', 'sofia.garcia', 'Sofía García', 'g3'],
     ['u-carlos', 'carlos.lopez', 'Carlos López', 'g3'], ['u-maria', 'maria.hernandez', 'María Hernández', 'g4'],
@@ -122,7 +123,8 @@ export async function datosDemo(hash) {
     datos: {
       config: { institucion: { ...INSTITUCION_BASE }, sistema: { inicializado: true, fecha: ahora } },
       grados: Object.fromEntries(GRADOS_BASE.map(({ id, ...d }) => [id, d])),
-      materias: Object.fromEntries(MATERIAS_BASE.map(({ id, ...d }) => [id, d])),
+      materias: { ...Object.fromEntries(MATERIAS_BASE.map(({ id, ...d }) => [id, d])), ingles: { nombre: 'Inglés', icono: '🔤', color: 'var(--morado)', grados: GRADOS_BASE.map((g) => g.id), visible: true, orden: 10 } },
+      juegos: Object.fromEntries(documentosPaqueteIngles('ingles', 'u-admin').map((d, i) => ['ing' + i, { ...d, creado: ahora, actualizado: ahora }])),
       usuarios, temas, recursos,
       actividades: { 'a-sumas': act1, 'a-palabras': act2 },
       claves: { 'a-sumas': clave1, 'a-palabras': clave2 },

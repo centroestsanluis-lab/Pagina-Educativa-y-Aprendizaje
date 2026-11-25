@@ -22,7 +22,7 @@ Este manual se sigue **una sola vez**. Tiempo aproximado: 1 a 2 horas. No hace f
 
 1. Entre a https://console.firebase.google.com con la cuenta del colegio.
 2. Clic en **Crear un proyecto** (o "Agregar proyecto"). Nombre: `cesl-digital`. Puede desactivar Google Analytics. Clic en **Crear proyecto**.
-3. Anote el **ID del proyecto** (aparece debajo del nombre, por ejemplo `cesl-digital-a1b2c`). 670703542424
+3. Anote el **ID del proyecto** (aparece debajo del nombre, por ejemplo `cesl-digital-a1b2c`).
 
 ## Paso 2. Activar los usuarios con contraseña
 

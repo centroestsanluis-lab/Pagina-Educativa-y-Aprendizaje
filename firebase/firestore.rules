@@ -137,6 +137,15 @@ service cloud.firestore {
       allow create, update: if esAlumno() && uid == request.auth.uid;
     }
 
+    // ---------- Juegos de aprendizaje creados por la escuela ----------
+    // Todos los usuarios activos juegan; los docentes solo editan juegos de las materias que imparten.
+    match /juegos/{id} {
+      allow read: if activo();
+      allow create: if esAdmin() || (esDocente() && request.resource.data.materiaId in yo().materias);
+      allow update: if esAdmin() || (esDocente() && resource.data.materiaId in yo().materias && request.resource.data.materiaId in yo().materias);
+      allow delete: if esAdmin() || (esDocente() && resource.data.materiaId in yo().materias);
+    }
+
     // Todo lo demás está prohibido
     match /{todo=**} { allow read, write: if false; }
   }

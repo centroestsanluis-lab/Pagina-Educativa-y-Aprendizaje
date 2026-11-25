@@ -5,6 +5,22 @@ import { inst, mascotaChica, mensajeLU } from '../tema.js';
 import { S, navegar, grado } from '../app.js';
 import { JUEGOS, AREAS, mezclar } from './catalogo.js';
 import { leerNumero } from '../calificar.js';
+import { construirJuego, disponibleEnNivel } from './personalizados.js';
+
+/** Juegos creados por docentes y administración (colección "juegos"). */
+async function juegosPersonalizados() {
+  try { return (await store.list('juegos', [['visible', '==', true]])).sort((a, b) => String(a.titulo).localeCompare(b.titulo)); } catch (e) { console.warn('Juegos personalizados no disponibles', e); return []; }
+}
+const vozDisponible = () => typeof speechSynthesis !== 'undefined';
+function hablar(texto, idioma) {
+  if (!vozDisponible() || !texto) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(texto); u.lang = idioma; u.rate = 0.85;
+  const vz = speechSynthesis.getVoices().find((x) => x.lang?.toLowerCase().startsWith(idioma.slice(0, 2).toLowerCase()));
+  if (vz) u.voice = vz;
+  speechSynthesis.speak(u);
+}
+const botonVoz = (v) => (v && vozDisponible() ? h('button', { class: 'btn claro chico', type: 'button', onclick: () => hablar(v.texto, v.idioma), 'aria-label': 'Escuchar' }, '🔊 Escuchar') : null);
 
 const RONDAS = 10;
 const COLORES_NIVEL = ['var(--azul)', 'var(--verde)', 'var(--naranja)', 'var(--rojo)', 'var(--amarillo)', 'var(--marino)'];
@@ -18,7 +34,7 @@ async function progreso() {
 
 export async function renderCatalogo(cont) {
   const nivel = nivelElegido || nivelPorDefecto();
-  const prog = await progreso();
+  const [prog, propios] = await Promise.all([progreso(), juegosPersonalizados()]);
   vaciar(cont);
   cont.append(h('h1', null, `${inst.iconos.juegos} ${inst.titulos.juegos}`),
     h('div', { class: 'saludo' }, h('img', { class: 'lu', src: mascotaChica(), alt: '', style: { width: '90px' } }),
@@ -30,18 +46,33 @@ export async function renderCatalogo(cont) {
     cont.append(h('section', { style: { marginBottom: '22px' } }, h('h2', null, `${a.icono} ${a.nombre}`),
       h('div', { class: 'rejilla chica' }, JUEGOS.filter((j) => j.area === a.id).map((j) => {
         const r = prog?.juegos?.[`${j.id}-${nivel}`];
-        return h('button', { class: 'mosaico', style: { '--c': a.color, minHeight: '120px', fontSize: '1.02rem' }, onclick: () => navegar(`/juego/${j.id}/${nivel}`) },
-          r ? h('span', { class: 'insignia', style: { color: 'var(--naranja)' } }, '⭐'.repeat(r.estrellas || 0) || '✔') : null,
-          h('span', { class: 'icono', style: { fontSize: '2.3rem' } }, j.icono), j.titulo);
+        return mosaicoJuego(j, a.color, nivel, prog);
       }))));
+  }
+  // Juegos creados por la escuela, agrupados por materia
+  const porMateria = {};
+  for (const d of propios) if (disponibleEnNivel(d, nivel)) (porMateria[d.materiaId] ||= []).push(d);
+  for (const [mid, lista] of Object.entries(porMateria)) {
+    const m = S.materias.find((x) => x.id === mid) || { nombre: 'Más juegos', icono: '🧩', color: 'var(--morado)' };
+    cont.append(h('section', { style: { marginBottom: '22px' } }, h('h2', null, `${m.icono || '🧩'} ${m.nombre}`),
+      h('div', { class: 'rejilla chica' }, lista.map((d) => mosaicoJuego({ id: 'c-' + d.id, icono: d.icono || '🧩', titulo: d.titulo }, m.color, nivel, prog)))));
   }
 }
 
-export function renderJuego(cont, juegoId, nivel) {
-  const juego = JUEGOS.find((j) => j.id === juegoId);
+function mosaicoJuego(j, color, nivel, prog) {
+  const r = prog?.juegos?.[`${j.id}-${nivel}`];
+  return h('button', { class: 'mosaico', style: { '--c': color, minHeight: '120px', fontSize: '1.02rem' }, onclick: () => navegar(`/juego/${j.id}/${nivel}`) },
+    r ? h('span', { class: 'insignia', style: { color: 'var(--naranja)' } }, '⭐'.repeat(r.estrellas || 0) || '✔') : null,
+    h('span', { class: 'icono', style: { fontSize: '2.3rem' } }, j.icono), j.titulo);
+}
+
+export async function renderJuego(cont, juegoId, nivel) {
+  let juego = JUEGOS.find((j) => j.id === juegoId);
+  if (!juego && String(juegoId).startsWith('c-')) {
+    try { const d = await store.get('juegos', juegoId.slice(2)); if (d) juego = construirJuego(d); } catch (e) { console.warn(e); }
+  }
   if (!juego) { navegar('/juegos'); return; }
   nivel = nivel || nivelPorDefecto();
-  const area = AREAS.find((a) => a.id === juego.area);
   const usadas = new Set(); const estado = {};
   let ronda = 0; let aciertos = 0; let inicio = Date.now();
 
@@ -73,10 +104,12 @@ export function renderJuego(cont, juegoId, nivel) {
       if (correcto) aciertos++;
       marcador.textContent = `${aciertos} ⭐`;
       vaciar(reaccion).append(h('img', { src: mascotaChica(), alt: '' }),
-        h('div', { class: 'burbuja', style: { color: correcto ? 'var(--exito)' : 'var(--error)' } }, correcto ? `✔ ${mensajeLU()}` : `La respuesta era: ${mostrar}. ¡Tú puedes!`));
+        h('div', { class: 'burbuja', style: { color: correcto ? 'var(--exito)' : 'var(--error)' } }, correcto ? `✔ ${mensajeLU()}` : `La respuesta era: ${mostrar}. ¡Tú puedes!`),
+        botonVoz(q.vozRespuesta));
+      if (q.vozRespuesta) hablar(q.vozRespuesta.texto, q.vozRespuesta.idioma);
       reaccion.append(h('button', { class: 'btn verde', onclick: siguiente, autofocus: true }, ronda >= RONDAS ? 'Ver resultado 🏆' : 'Siguiente ▶'));
     };
-    tablero.append(h('div', { class: 'consigna' }, q.consigna));
+    tablero.append(h('div', { class: 'consigna' }, q.consigna), q.voz ? h('div', { style: { marginBottom: '10px' } }, botonVoz(q.voz)) : null);
     if (q.visual?.tipo === 'num') tablero.append(h('div', { class: 'grande-num' }, q.visual.valor));
     if (q.visual?.tipo === 'emoji') tablero.append(h('div', { class: 'emoji-grande', style: { fontSize: q.visual.valor.length > 8 ? '2.4rem' : '4.5rem', wordBreak: 'break-all' } }, q.visual.valor));
     if (q.visual?.tipo === 'lectura') tablero.append(h('div', { class: 'lectura' }, q.visual.valor));

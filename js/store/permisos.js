@@ -49,6 +49,7 @@ export function puedeLeer(col, id, d, ctx) {
     case 'resultados': return esAdmin(yo) || tieneClase(yo, d) || (d.alumnoId === uid && d.visibleAlumno === true);
     case 'bitacora': return esAdmin(yo);
     case 'practica': return id === uid || esAdmin(yo);
+    case 'juegos': return activo(yo);
     default: return false;
   }
 }
@@ -99,6 +100,14 @@ export function puedeEscribir(op, col, id, antes, despues, ctx) {
       return op === 'crear' && (esAdmin(yo) || esDocente(yo)) && despues?.actorId === uid && despues?.fecha === ctx.ahora;
     case 'practica':
       return id === uid && esAlumno(yo) && op !== 'borrar';
+    case 'juegos': {
+      // Administración: todo. Docentes: solo juegos de materias que imparten.
+      if (esAdmin(yo)) return true;
+      const suya = (d) => esDocente(yo) && !!d && (yo.materias || []).includes(d.materiaId);
+      if (op === 'crear') return suya(despues);
+      if (op === 'actualizar') return suya(antes) && suya(despues);
+      return suya(antes);
+    }
     default: return false;
   }
 }

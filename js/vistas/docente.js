@@ -9,14 +9,16 @@ import { tipoPorEnlace, TIPOS_RECURSO, llamarServidor, servidorConfigurado, esUr
 const MENU = [
   ['/', '🏠', 'Mis clases'],
   ['/calificaciones', '📊', 'Calificaciones'],
+  ['/mis-juegos', '🧩', 'Juegos de aprendizaje'],
   ['/juegos', '🎮', 'Aprende Jugando'],
 ];
 
 export async function render(raiz, partes, cancelada) {
   const [r, p1, p2] = partes;
   const activa = r ? '/' + r : '/';
-  const cont = panelConMenu(raiz, 'Panel docente', MENU, ['/calificaciones', '/juegos'].includes(activa) ? activa : '/');
+  const cont = panelConMenu(raiz, 'Panel docente', MENU, ['/calificaciones', '/juegos', '/mis-juegos'].includes(activa) ? activa : r === 'juego' ? '/juegos' : '/');
   return rutasContenido(cont, partes, cancelada) || (async () => {
+    if (r === 'mis-juegos') { const m = await import('./juegos-admin.js'); return m.renderJuegosAdmin(cont, partes); }
     if (r === 'calificaciones') { const m = await import('./resultados.js'); return m.renderCalificaciones(cont, misClases()); }
     if (r === 'juegos' || r === 'juego') { const m = await import('../juegos/motor.js'); return r === 'juego' ? m.renderJuego(cont, p1, Number(p2) || null) : m.renderCatalogo(cont); }
     return inicioDocente(cont);

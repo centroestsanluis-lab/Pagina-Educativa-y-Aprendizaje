@@ -14,9 +14,9 @@ const MENU = [
   ['/', '🏠', 'Inicio'], ['/usuarios', '👥', 'Usuarios'], ['/grados', '🎒', 'Grados'], ['/materias', '📚', 'Materias'],
   ['/contenidos', '📁', 'Contenidos'], ['/actividades', '📝', 'Actividades'], ['/calificaciones', '📊', 'Calificaciones'],
   ['/reportes', '📄', 'Reportes'], ['/diseno', '🎨', 'Diseño institucional'], ['/config', '⚙️', 'Configuración'],
-  ['/respaldos', '💾', 'Copias de seguridad'], ['/bitacora', '🕑', 'Registro de cambios'], ['/juegos', '🎮', 'Aprende Jugando'],
+  ['/respaldos', '💾', 'Copias de seguridad'], ['/bitacora', '🕑', 'Registro de cambios'], ['/mis-juegos', '🧩', 'Juegos de aprendizaje'], ['/juegos', '🎮', 'Aprende Jugando'],
 ];
-const COLECCIONES = ['config', 'grados', 'materias', 'usuarios', 'temas', 'recursos', 'actividades', 'claves', 'entregas', 'resultados', 'bitacora', 'practica'];
+const COLECCIONES = ['config', 'grados', 'materias', 'usuarios', 'temas', 'recursos', 'actividades', 'claves', 'entregas', 'resultados', 'bitacora', 'practica', 'juegos'];
 
 export async function render(raiz, partes, cancelada) {
   const [r, p1, p2] = partes;
@@ -37,13 +37,27 @@ export async function render(raiz, partes, cancelada) {
     case 'config': return vistaConfig(cont);
     case 'respaldos': return vistaRespaldos(cont);
     case 'bitacora': return vistaBitacora(cont);
+    case 'mis-juegos': await asegurarMateriasDocentes(); return import('./juegos-admin.js').then((m) => m.renderJuegosAdmin(cont, partes));
     case 'juegos': case 'juego': return import('../juegos/motor.js').then((m) => (r === 'juego' ? m.renderJuego(cont, p1, Number(p2) || null) : m.renderCatalogo(cont)));
     default: return vistaInicio(cont, cancelada);
   }
 }
 
+/** Grados y materias de un docente, calculados de sus clases (los usan las reglas de seguridad). */
+const derivados = (clases) => ({ grados: [...new Set(clases.map((c) => c.split(ID_SEP)[0]))], materias: [...new Set(clases.map((c) => c.split(ID_SEP)[1]))] });
+/** Completa "materias" en docentes creados antes de la versión 1.1 (necesario para editar juegos). */
+async function asegurarMateriasDocentes() {
+  try {
+    const docs = await store.list('usuarios', [['rol', '==', 'docente']]);
+    const ops = docs.filter((u) => JSON.stringify((u.materias || []).slice().sort()) !== JSON.stringify(derivados(u.clases || []).materias.slice().sort()))
+      .map((u) => ({ op: 'update', col: 'usuarios', id: u.id, data: derivados(u.clases || []) }));
+    if (ops.length) await store.lote(ops);
+  } catch (e) { console.warn('No se pudieron actualizar los docentes', e); }
+}
+
 // ================================================================== INICIO
 async function vistaInicio(cont, cancelada) {
+  asegurarMateriasDocentes();
   cont.append(encabezado('Panel de administración'));
   const zona = h('div'); cont.append(zona); cargando(zona);
   try {
@@ -166,7 +180,7 @@ function editarUsuario(u, rol, listo) {
       if (!n) { aviso('Escriba el nombre.', 'error'); return false; }
       const datos = { nombre: n, rol };
       if (rol === 'alumno') { datos.gradoId = selG.value; datos.seccion = selS.value; }
-      if (rol === 'docente') { datos.clases = clases.valor(); datos.grados = [...new Set(datos.clases.map((c) => c.split(ID_SEP)[0]))]; }
+      if (rol === 'docente') { datos.clases = clases.valor(); Object.assign(datos, derivados(datos.clases)); }
       if (!esNuevo) {
         await store.update('usuarios', u.id, { ...datos, actualizado: store.AHORA });
         registrar('Editó usuario', `${n} (${u.usuario})`, S.yo); aviso('Usuario actualizado', 'ok'); listo(); return;

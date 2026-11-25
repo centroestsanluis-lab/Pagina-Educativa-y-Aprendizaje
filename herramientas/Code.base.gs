@@ -17,9 +17,9 @@ var CONFIG = {
   API_KEY: 'PEGUE-AQUI-LA-apiKey'           // ejemplo: AIzaSy...
 };
 
-var VERSION = 'CESL Apps Script 1.0';
+var VERSION = 'CESL Apps Script 1.1';
 var CARPETA_RAIZ = 'CESL Digital';
-var COLECCIONES = ['config', 'grados', 'materias', 'usuarios', 'temas', 'recursos', 'actividades', 'claves', 'entregas', 'resultados', 'bitacora', 'practica'];
+var COLECCIONES = ['config', 'grados', 'materias', 'usuarios', 'temas', 'recursos', 'actividades', 'claves', 'entregas', 'resultados', 'bitacora', 'practica', 'juegos'];
 
 // ------------------------------------------------------------------ Entrada web
 function doPost(e) {

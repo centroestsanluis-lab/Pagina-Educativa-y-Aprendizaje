@@ -17,7 +17,7 @@
  {
   "prueba": "Alumno ve solo las materias de su grado",
   "ok": true,
-  "detalle": "['1\\n📖\\nComunicación y Lenguaje', '1\\n🔢\\nMatemáticas', '🌱\\nMedio Social y Natural', '🇬🇹\\nMi Guatemala', '🎨\\nExpresión Artística', '💻\\nTecnología y Computación']"
+  "detalle": "['1\\n📖\\nComunicación y Lenguaje', '1\\n🔢\\nMatemáticas', '🌱\\nMedio Social y Natural', '🇬🇹\\nMi Guatemala', '🎨\\nExpresión Artística', '💻\\nTecnología y Computación', '🔤\\nInglés']"
  },
  {
   "prueba": "Calificación automática: todo correcto = 100",
@@ -70,9 +70,9 @@
   "detalle": "PERMITIDO"
  },
  {
-  "prueba": "Docente ve solo sus 3 clases asignadas",
+  "prueba": "Docente ve solo sus 4 clases asignadas",
   "ok": true,
-  "detalle": "['🔢\\nMatemáticas\\nTercero primaria', '📖\\nComunicación y Lenguaje\\nTercero primaria', '🔢\\nMatemáticas\\nCuarto primaria']"
+  "detalle": "['🔢\\nMatemáticas\\nTercero primaria', '📖\\nComunicación y Lenguaje\\nTercero primaria', '🔢\\nMatemáticas\\nCuarto primaria', '🔤\\nInglés\\nTercero primaria']"
  },
  {
   "prueba": "Docente: solo accede a sus grados y materias",
@@ -127,7 +127,7 @@
  {
   "prueba": "Calificación con errores y pregunta abierta pendiente",
   "ok": true,
-  "detalle": "¡Entregado! 🎉 50 ⭐  Obtuviste 5 de 10 puntos.  Algunas respuestas las revisará tu maestra o maestro; tu nota puede subir.  ¡Eres un campeón! 📝 Volver a mis tareas 👀 Ver correcciones"
+  "detalle": "¡Entregado! 🎉 50 ⭐  Obtuviste 5 de 10 puntos.  Algunas respuestas las revisará tu maestra o maestro; tu nota puede subir.  ¡Cada día aprendes más! 📝 Volver a mis tareas 👀 Ver correcciones"
  },
  {
   "prueba": "Docente ve avisos de entregas por revisar",
@@ -192,7 +192,7 @@
  {
   "prueba": "Registro de cambios importantes",
   "ok": true,
-  "detalle": "Fecha\tPersona\tRol\tAcción\tDetalle\n23 nov, 01:05 p. m.\tAdministración CESL\tadmin\tDescargó copia de seguridad\t\n23 nov, 01:05 p. m.\tAdministración CESL\tadmin\tCambió el diseño institucional\t\n23 nov, 01:05 p. m.\tAdministración CESL\tadmin\tCreó materia\tInglés\n23 nov, 01:05 p. m.\tAdministración CESL\tadmin\tEd"
+  "detalle": "Fecha\tPersona\tRol\tAcción\tDetalle\n24 nov, 11:12 p. m.\tAdministración CESL\tadmin\tDescargó copia de seguridad\t\n24 nov, 11:12 p. m.\tAdministración CESL\tadmin\tCambió el diseño institucional\t\n24 nov, 11:12 p. m.\tAdministración CESL\tadmin\tCreó materia\tMúsica\n24 nov, 11:12 p. m.\tAdministración CESL\tadmin\tEd"
  },
  {
   "prueba": "Administración puede ver contenidos de cualquier clase",
