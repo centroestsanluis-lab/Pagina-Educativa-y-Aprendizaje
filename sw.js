@@ -1,7 +1,7 @@
 // Service worker de CESL Digital: guarda la "carcasa" de la app para que
 // abra rápido en las tablets. Los datos (tareas, notas) siempre vienen del
 // servidor; nunca se guardan aquí.
-const VERSION = 'cesl-v1.2.0';
+const VERSION = 'cesl-v1.3.0';
 const ARCHIVOS = [
   './', 'index.html', 'config.js', 'manifest.webmanifest', 'css/app.css',
   'fonts/nunito-latin-600-normal.woff2', 'fonts/nunito-latin-800-normal.woff2', 'fonts/nunito-latin-900-normal.woff2',
@@ -10,7 +10,7 @@ const ARCHIVOS = [
   'js/calificar.js', 'js/drive.js', 'js/tema.js', 'js/semilla.js',
   'js/vistas/login.js', 'js/vistas/alumno.js', 'js/vistas/docente.js', 'js/vistas/admin.js',
   'js/vistas/editor.js', 'js/vistas/resolver.js', 'js/vistas/resultados.js', 'js/vistas/comun.js',
-  'js/juegos/motor.js', 'js/juegos/bancos.js', 'js/juegos/catalogo.js', 'js/juegos/personalizados.js', 'js/vistas/juegos-admin.js'
+  'js/juegos/motor.js', 'js/juegos/bancos.js', 'js/juegos/catalogo.js', 'js/juegos/personalizados.js', 'js/juegos/paquetes.js', 'js/vistas/juegos-admin.js'
 ];
 
 self.addEventListener('install', (e) => {
