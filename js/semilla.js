@@ -1,7 +1,7 @@
 // Datos iniciales: configuración institucional, grados y materias.
 // En modo demostración también crea usuarios y actividades de ejemplo.
 import { claseDe } from './store/permisos.js';
-import { documentosPaqueteIngles } from './juegos/personalizados.js';
+import { PAQUETES, documentosPaquete } from './juegos/paquetes.js';
 
 export const COLORES_BASE = {
   rojo: '#E53935', azul: '#1E88E5', verde: '#43A047', amarillo: '#FDD835',
@@ -121,10 +121,10 @@ export async function datosDemo(hash) {
     version: 1,
     cuentas,
     datos: {
-      config: { institucion: { ...INSTITUCION_BASE }, sistema: { inicializado: true, fecha: ahora } },
+      config: { institucion: { ...INSTITUCION_BASE }, sistema: { inicializado: true, fecha: ahora }, paquetes: { instalados: { lenguaje: true, ciencias: true, guatemala: true } } },
       grados: Object.fromEntries(GRADOS_BASE.map(({ id, ...d }) => [id, d])),
       materias: { ...Object.fromEntries(MATERIAS_BASE.map(({ id, ...d }) => [id, d])), ingles: { nombre: 'Inglés', icono: '🔤', color: 'var(--morado)', grados: GRADOS_BASE.map((g) => g.id), visible: true, orden: 10 } },
-      juegos: Object.fromEntries(documentosPaqueteIngles('ingles', 'u-admin').map((d, i) => ['ing' + i, { ...d, creado: ahora, actualizado: ahora }])),
+      juegos: Object.fromEntries(PAQUETES.flatMap((p) => documentosPaquete(p, p.materiaId, 'u-admin').map((d, i) => [(p.id === 'ingles' ? 'ing' : p.id) + i, { ...d, creado: ahora, actualizado: ahora }]))),
       usuarios, temas, recursos,
       actividades: { 'a-sumas': act1, 'a-palabras': act2 },
       claves: { 'a-sumas': clave1, 'a-palabras': clave2 },

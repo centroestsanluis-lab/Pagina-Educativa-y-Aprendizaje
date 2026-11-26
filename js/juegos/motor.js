@@ -3,7 +3,7 @@ import { h, vaciar } from '../ui.js';
 import { store } from '../store/index.js';
 import { inst, mascotaChica, mensajeLU } from '../tema.js';
 import { S, navegar, grado } from '../app.js';
-import { JUEGOS, AREAS, mezclar } from './catalogo.js';
+import { JUEGOS, AREAS, mezclar, MATERIA_MATEMATICAS } from './catalogo.js';
 import { leerNumero } from '../calificar.js';
 import { construirJuego, disponibleEnNivel } from './personalizados.js';
 
@@ -42,20 +42,22 @@ export async function renderCatalogo(cont) {
     h('div', { class: 'selector-nivel', role: 'group', 'aria-label': 'Nivel' }, COLORES_NIVEL.map((c, i) =>
       h('button', { class: i + 1 === nivel ? 'activo' : '', style: { background: c, color: i === 4 ? 'var(--tinta)' : '#fff' }, 'aria-pressed': String(i + 1 === nivel), title: `Nivel ${i + 1}° primaria`,
         onclick: () => { nivelElegido = i + 1; renderCatalogo(cont); } }, `${i + 1}°`))));
-  for (const a of AREAS) {
-    cont.append(h('section', { style: { marginBottom: '22px' } }, h('h2', null, `${a.icono} ${a.nombre}`),
-      h('div', { class: 'rejilla chica' }, JUEGOS.filter((j) => j.area === a.id).map((j) => {
-        const r = prog?.juegos?.[`${j.id}-${nivel}`];
-        return mosaicoJuego(j, a.color, nivel, prog);
-      }))));
-  }
-  // Juegos creados por la escuela, agrupados por materia
+  // Juegos creados por la escuela (paquetes y propios), agrupados por materia
   const porMateria = {};
   for (const d of propios) if (disponibleEnNivel(d, nivel)) (porMateria[d.materiaId] ||= []).push(d);
-  for (const [mid, lista] of Object.entries(porMateria)) {
+  const propio = (d) => ({ id: 'c-' + d.id, icono: d.icono || '🧩', titulo: d.titulo });
+  // Matemáticas: juegos automáticos + los que agregue la escuela
+  for (const a of AREAS) {
+    const extra = porMateria[MATERIA_MATEMATICAS] || []; delete porMateria[MATERIA_MATEMATICAS];
+    cont.append(h('section', { style: { marginBottom: '22px' } }, h('h2', null, `${a.icono} ${a.nombre}`),
+      h('div', { class: 'rejilla chica' }, JUEGOS.filter((j) => j.area === a.id).map((j) => mosaicoJuego(j, a.color, nivel, prog)),
+        extra.map((d) => mosaicoJuego(propio(d), a.color, nivel, prog)))));
+  }
+  const orden = (mid) => { const i = S.materias.findIndex((m) => m.id === mid); return i < 0 ? 999 : i; };
+  for (const [mid, lista] of Object.entries(porMateria).sort((a, b) => orden(a[0]) - orden(b[0]))) {
     const m = S.materias.find((x) => x.id === mid) || { nombre: 'Más juegos', icono: '🧩', color: 'var(--morado)' };
     cont.append(h('section', { style: { marginBottom: '22px' } }, h('h2', null, `${m.icono || '🧩'} ${m.nombre}`),
-      h('div', { class: 'rejilla chica' }, lista.map((d) => mosaicoJuego({ id: 'c-' + d.id, icono: d.icono || '🧩', titulo: d.titulo }, m.color, nivel, prog)))));
+      h('div', { class: 'rejilla chica' }, lista.map((d) => mosaicoJuego(propio(d), m.color, nivel, prog)))));
   }
 }
 

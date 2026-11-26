@@ -72,6 +72,10 @@ Menú **🧩 Juegos de aprendizaje**. Puede crear juegos **solo en las materias 
 
 **Juego de preguntas**: cada pregunta con su respuesta correcta y hasta 3 incorrectas. Sirve para cualquier materia.
 
+**Juego de ordenar**: escriba palabras (para ordenar sus letras) u oraciones (para ordenar sus palabras) en el orden correcto; el sistema las desordena.
+
+**Preguntas con lectura**: en cada pregunta puede abrir "Texto para leer" y escribir una lectura corta que el alumno verá arriba.
+
 **Pegar lista**: copie las columnas desde Excel o Google Sheets (*palabra · traducción · emoji · desde grado · hasta grado*) y pulse "📋 Pegar lista".
 
 Botones: **▶️ Probar**, **✏️ Editar**, **🙈 Ocultar / 👁️ Mostrar** y **🗑️ Eliminar**. Los juegos aparecen a los alumnos en Aprende Jugando, en la sección de su materia, solo en los niveles que tengan palabras o preguntas.

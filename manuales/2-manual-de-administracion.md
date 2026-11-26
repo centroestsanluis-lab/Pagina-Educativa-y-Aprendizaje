@@ -35,11 +35,12 @@ Cree, edite, oculte o elimine materias. Elija ícono, color y en qué **grados**
 **Contenidos** muestra cada grado con sus materias: entre a cualquiera para ver o administrar temas, materiales y actividades (igual que un docente). **Actividades** lista todas las actividades del colegio con su docente y estado.
 
 ## Juegos de aprendizaje
-Menú **🧩 Juegos de aprendizaje**: aquí se crean los juegos de Aprende Jugando sin programar (vea también el Manual para docentes). La administración puede crear y editar juegos de **todas** las materias; cada docente, solo de las materias que tiene asignadas.
+Menú **🧩 Juegos de aprendizaje**: aquí se administran todos los juegos de Aprende Jugando, ordenados por materia (use los botones de materia para filtrar). La administración crea y edita juegos de **todas** las materias; cada docente, solo de las materias que tiene asignadas.
 
-- **📦 Paquete de Inglés**: crea la materia "Inglés" (si no existe) y 9 juegos listos con pronunciación: colores, números, animales, familia, escuela, cuerpo, comida, días de la semana y saludos. Si se pulsa otra vez no duplica nada.
-- Para que un docente de Inglés pueda editarlos, asígnele en **Usuarios → Docentes → Editar** las casillas de **Inglés** en sus grados.
-- Si crea una materia nueva (por ejemplo Música), puede agregarle juegos de vocabulario o de preguntas y aparecerán solos en Aprende Jugando como una sección nueva.
+- **Tipos de juego:** ➕ Vocabulario (parejas: palabra–traducción, órgano–función, departamento–cabecera…), ➕ Preguntas (con texto de lectura opcional) y ➕ Ordenar (letras de una palabra o palabras de una oración).
+- **📦 Paquetes de juegos:** Inglés, Comunicación y Lenguaje, Ciencias y Mi Guatemala. Cada paquete muestra cuántos juegos tiene instalados. Si están todos, el botón queda deshabilitado ("✔ Todo instalado"); si alguno se borró, cambia a **♻️ Recuperar** y lo vuelve a crear con su contenido original. Los juegos de los paquetes se pueden editar como cualquier otro.
+- **Matemáticas** tiene 9 juegos automáticos que inventan operaciones nuevas cada vez (no se editan, solo se prueban). Se pueden agregar juegos propios de Matemáticas.
+- Para que un docente edite los juegos de una materia, asígnele esa materia en **Usuarios → Docentes → Editar**.
 
 ## Calificaciones
 Elija grado, materia y sección para ver la tabla de notas (sobre 100) por actividad, el promedio de cada alumno y los **temas que necesitan refuerzo**. Toque el nombre de un alumno para ver su progreso. Botones: **Exportar** (Excel / Google Sheets) e **Imprimir**.

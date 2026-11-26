@@ -127,7 +127,7 @@
  {
   "prueba": "Calificación con errores y pregunta abierta pendiente",
   "ok": true,
-  "detalle": "¡Entregado! 🎉 50 ⭐  Obtuviste 5 de 10 puntos.  Algunas respuestas las revisará tu maestra o maestro; tu nota puede subir.  ¡Eres un campeón! 📝 Volver a mis tareas 👀 Ver correcciones"
+  "detalle": "¡Entregado! 🎉 50 ⭐  Obtuviste 5 de 10 puntos.  Algunas respuestas las revisará tu maestra o maestro; tu nota puede subir.  ¡Excelente trabajo! 📝 Volver a mis tareas 👀 Ver correcciones"
  },
  {
   "prueba": "Docente ve avisos de entregas por revisar",
@@ -192,7 +192,7 @@
  {
   "prueba": "Registro de cambios importantes",
   "ok": true,
-  "detalle": "Fecha\tPersona\tRol\tAcción\tDetalle\n25 nov, 11:55 a. m.\tAdministración CESL\tadmin\tDescargó copia de seguridad\t\n25 nov, 11:55 a. m.\tAdministración CESL\tadmin\tCambió el diseño institucional\t\n25 nov, 11:55 a. m.\tAdministración CESL\tadmin\tCreó materia\tMúsica\n25 nov, 11:55 a. m.\tAdministración CESL\tadmin\tEd"
+  "detalle": "Fecha\tPersona\tRol\tAcción\tDetalle\n26 nov, 09:43 a. m.\tAdministración CESL\tadmin\tDescargó copia de seguridad\t\n26 nov, 09:43 a. m.\tAdministración CESL\tadmin\tCambió el diseño institucional\t\n26 nov, 09:43 a. m.\tAdministración CESL\tadmin\tCreó materia\tMúsica\n26 nov, 09:43 a. m.\tAdministración CESL\tadmin\tEd"
  },
  {
   "prueba": "Administración puede ver contenidos de cualquier clase",

@@ -140,10 +140,10 @@ async def main():
         await pg.wait_for_selector('text=Jugar otra vez')
         ok('Juego: 10 rondas y pantalla de resultado', True)
         await foto(pg, '09-juego-resultado')
-        for jid, nivel in [('sumas', 4), ('formar', 2), ('lectura', 3), ('figuras', 1), ('departamentos', 5), ('mental', 6), ('oraciones', 4)]:
+        for jid, nivel in [('sumas', 4), ('c-lenguaje1', 2), ('c-lenguaje2', 3), ('figuras', 1), ('c-guatemala0', 5), ('mental', 6), ('c-lenguaje3', 4), ('c-ciencias0', 2)]:
             await pg.goto(URL + f'#/juego/{jid}/{nivel}'); await pg.wait_for_selector('.tablero .consigna')
         ok('Todos los tipos de juego cargan', len(errores) == 0, '; '.join(errores))
-        await pg.goto(URL + '#/juego/formar/2'); await pg.wait_for_selector('.tablero .ficha'); await foto(pg, '10-juego-formar')
+        await pg.goto(URL + '#/juego/c-lenguaje1/2'); await pg.wait_for_selector('.tablero .ficha'); await foto(pg, '10-juego-formar')
         r = await permisos(pg, "await p('progreso guardado', async () => { const d = await store.get('practica', 'u-luis'); if (!d || !d.juegos['comparar-3']) throw new Error('no guardado'); });")
         ok('El progreso del juego se guarda para el alumno', r['progreso guardado'] == 'PERMITIDO', r['progreso guardado'])
         await salir(pg)

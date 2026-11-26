@@ -163,14 +163,14 @@ function departamento(n, usadas) {
 
 const banco = (b) => (n, usadas) => preguntaBanco(b, n, usadas);
 
-export const AREAS = [
+const TODAS_AREAS = [
   { id: 'mate', nombre: 'Matemáticas', icono: '🔢', color: 'var(--azul)' },
   { id: 'lenguaje', nombre: 'Comunicación y Lenguaje', icono: '📖', color: 'var(--rojo)' },
   { id: 'ciencias', nombre: 'Ciencias', icono: '🔬', color: 'var(--verde)' },
   { id: 'guate', nombre: 'Mi Guatemala', icono: '🇬🇹', color: 'var(--celeste)' },
 ];
 
-export const JUEGOS = [
+const TODOS = [
   { id: 'sumas', area: 'mate', titulo: 'Sumas', icono: '➕', generar: suma },
   { id: 'restas', area: 'mate', titulo: 'Restas', icono: '➖', generar: resta },
   { id: 'multiplicaciones', area: 'mate', titulo: 'Multiplicaciones', icono: '✖️', generar: multiplicacion },
@@ -197,3 +197,9 @@ export const JUEGOS = [
   { id: 'geografia', area: 'guate', titulo: 'Geografía', icono: '🌋', generar: banco(GUATEMALA.geografia) },
   { id: 'cultura', area: 'guate', titulo: 'Cultura y tradiciones', icono: '🪁', generar: banco(GUATEMALA.cultura) },
 ];
+
+// Desde la versión 1.3 los juegos de Lenguaje, Ciencias y Mi Guatemala son "paquetes" editables
+// (js/juegos/paquetes.js). Aquí quedan solo los de Matemáticas, que se generan solos.
+export const AREAS = TODAS_AREAS.filter((a) => a.id === 'mate');
+export const JUEGOS = TODOS.filter((j) => j.area === 'mate');
+export const MATERIA_MATEMATICAS = 'matematicas';

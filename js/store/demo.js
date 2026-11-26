@@ -8,8 +8,8 @@ import { ErrorCesl, id as nuevoId } from '../ui.js';
 import { datosDemo } from '../semilla.js';
 import { construirResultado } from '../calificar.js';
 
-const LLAVE = 'cesl-demo-v2';
-const LLAVE_SESION = 'cesl-demo-sesion-v2';
+const LLAVE = 'cesl-demo-v3';
+const LLAVE_SESION = 'cesl-demo-sesion-v3';
 const LLAVE_INTENTOS = 'cesl-demo-intentos';
 export const AHORA = { __ahora: true };
 

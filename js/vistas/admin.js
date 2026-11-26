@@ -37,7 +37,7 @@ export async function render(raiz, partes, cancelada) {
     case 'config': return vistaConfig(cont);
     case 'respaldos': return vistaRespaldos(cont);
     case 'bitacora': return vistaBitacora(cont);
-    case 'mis-juegos': await asegurarMateriasDocentes(); return import('./juegos-admin.js').then((m) => m.renderJuegosAdmin(cont, partes));
+    case 'mis-juegos': { await asegurarMateriasDocentes(); const m = await import('./juegos-admin.js'); await m.instalarPaquetesIniciales(); return m.renderJuegosAdmin(cont, partes); }
     case 'juegos': case 'juego': return import('../juegos/motor.js').then((m) => (r === 'juego' ? m.renderJuego(cont, p1, Number(p2) || null) : m.renderCatalogo(cont)));
     default: return vistaInicio(cont, cancelada);
   }
@@ -58,6 +58,7 @@ async function asegurarMateriasDocentes() {
 // ================================================================== INICIO
 async function vistaInicio(cont, cancelada) {
   asegurarMateriasDocentes();
+  import('./juegos-admin.js').then((m) => m.instalarPaquetesIniciales());
   cont.append(encabezado('Panel de administración'));
   const zona = h('div'); cont.append(zona); cargando(zona);
   try {
